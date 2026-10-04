@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>旅行計画作成ツール（岐阜・福井・富山・石川版）</title>
+
+<!-- トップページは検索エンジンに載せます（運営者情報・プライバシーポリシーのページは noindex のままです） -->
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
+<meta name="referrer" content="no-referrer">
+<link rel="canonical" href="https://leben-k.github.io/hokuriku/">
+<meta name="description" content="岐阜県・福井県・富山県・石川県（北陸）への旅行計画を作る無料ツール。行き先・日数・人数・予算を選ぶだけで、日程、移動、費用、宿さがしの目安がわかります。金沢・富山・立山黒部・福井・永平寺・高山・白川郷・下呂温泉に対応。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://leben-k.github.io/hokuriku/">
+<meta property="og:site_name" content="旅行計画作成ツール（岐阜・福井・富山・石川版）">
+<meta property="og:title" content="旅行計画作成ツール（岐阜・福井・富山・石川版）">
+<meta property="og:description" content="行き先・日数・人数・予算を選ぶだけで、北陸（岐阜・福井・富山・石川）旅行の日程、移動、費用、宿さがしの目安を作れます。">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary">
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ctext y='52' font-size='52'%3E%F0%9F%A7%B3%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --sky:#E8F5FB; --ink:#1B2B3A; --muted:#4F6272; --card:#FFFFFF; --line:#D3E2EA;
+  --sea:#0E7F92; --sun:#F5B93B; --coral:#D64530; --leaf:#3E9E5E; --iris:#5A5FCB;
+  --gifu:#2F8F55; --fukui:#D9761F; --toyama:#2F73C7; --ishikawa:#C9414F;
+  --warn:#8A5A00; --warn-bg:#FFF4D6; --ok:#14683B; --ok-bg:#E1F5E9;
+  --font:"Zen Maru Gothic","Hiragino Maru Gothic ProN","Hiragino Sans","Yu Gothic",Meiryo,sans-serif;
+  color-scheme:light;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--sky);color:var(--ink);font-family:var(--font);line-height:1.65;font-size:16px}
+.wrap{max-width:860px;margin:0 auto;padding:0 14px 64px}
+a{color:var(--sea)}
+:focus-visible{outline:3px solid var(--iris);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.ico{width:1.6em;height:1.6em;flex:none;vertical-align:middle}
+.ico.lg{width:2.4em;height:2.4em}
+
+/* ---- Hero ---- */
+.hero{position:relative;margin:0 -14px;overflow:hidden;background:#7EC8F0}
+.hero-art{display:block;width:100%;height:clamp(230px,37.5vw,330px)}
+.hero-text{position:absolute;left:0;right:0;top:0;padding:18px 18px 0;text-align:center}
+.hero h1{margin:0;font-size:clamp(1.55rem,6.4vw,2.4rem);font-weight:900;line-height:1.25;color:#fff;
+  text-shadow:0 2px 0 rgba(20,60,110,.55),0 0 14px rgba(20,60,110,.45)}
+.edition{display:inline-block;margin-top:8px;padding:.3rem 1rem;border-radius:999px;background:#fff;color:var(--ink);font-weight:900;font-size:clamp(.95rem,3.6vw,1.2rem);
+  box-shadow:0 3px 0 rgba(20,60,110,.25)}
+.edition b{font-weight:900}
+.edition .g{color:var(--gifu)} .edition .f{color:var(--fukui)} .edition .t{color:var(--toyama)} .edition .i{color:var(--ishikawa)}
+.intro{margin:14px 2px 8px;color:var(--muted);font-size:.95rem}
+.notice{margin:10px 0 16px;padding:.7rem .9rem;background:var(--warn-bg);border-radius:12px;color:var(--warn);font-size:.9rem}
+
+/* ---- Cards & fields ---- */
+.card{background:var(--card);border-radius:18px;padding:16px;margin:14px 0;box-shadow:0 2px 0 var(--line)}
+.card h2{margin:0 0 10px;font-size:1.15rem;font-weight:900;display:flex;align-items:center;gap:8px}
+.field{display:flex;flex-direction:column;gap:4px;margin:10px 0}
+.field>span,.lbl{font-size:.88rem;color:var(--muted);font-weight:700}
+input[type=text],input[type=number],input[type=date],select{
+  width:100%;min-height:46px;padding:.5rem .7rem;font:inherit;color:var(--ink);background:#fff;border:2px solid var(--line);border-radius:12px}
+input[type=number]{-moz-appearance:textfield;appearance:textfield}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;align-items:end}
+.hint{font-size:.85rem;color:var(--muted);margin:4px 0 0}
+.hint.box{background:var(--sky);padding:.5rem .7rem;border-radius:10px}
+
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.chip{position:relative}
+.chip input{position:absolute;opacity:0;inset:0;width:100%;height:100%;margin:0;cursor:pointer}
+.chip span{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:.35rem .9rem;border-radius:999px;border:2px solid var(--line);background:#fff;font-weight:700;font-size:.95rem}
+.chip input:checked+span{background:var(--sea);border-color:var(--sea);color:#fff}
+.chip input:focus-visible+span{outline:3px solid var(--iris);outline-offset:2px}
+.pref .chip input:checked+span{background:var(--pc);border-color:var(--pc)}
+.pref[data-p="gifu"]{--pc:var(--gifu)} .pref[data-p="fukui"]{--pc:var(--fukui)} .pref[data-p="toyama"]{--pc:var(--toyama)} .pref[data-p="ishikawa"]{--pc:var(--ishikawa)}
+.pref{border-radius:14px;border:2px solid var(--pc);padding:10px;margin:10px 0}
+.pref-h{display:flex;align-items:center;gap:10px}
+.pref-h svg{width:88px;height:58px;border-radius:10px;flex:none}
+.pref-h b{font-size:1.1rem;color:var(--pc)}
+.pref-h .all{margin-left:auto}
+.btn{font:inherit;font-weight:700;min-height:44px;padding:.4rem 1rem;border-radius:12px;border:2px solid var(--line);background:#fff;color:var(--ink);cursor:pointer}
+.btn.small{min-height:38px;padding:.2rem .8rem;font-size:.85rem}
+.btn.go{width:100%;min-height:58px;font-size:1.2rem;font-weight:900;background:var(--coral);border-color:var(--coral);color:#fff;border-radius:16px;box-shadow:0 4px 0 #9B2E1E;display:flex;align-items:center;justify-content:center;gap:10px}
+.btn.go:active{transform:translateY(3px);box-shadow:0 1px 0 #9B2E1E}
+.modes{display:grid;grid-template-columns:repeat(4,1fr);gap:6px 4px;margin:4px 0 8px}
+.modes span{display:flex;flex-direction:column;align-items:center;font-size:.72rem;color:var(--muted);text-align:center;line-height:1.3}
+.modes .ico{width:38px;height:38px}
+.radio-row{display:flex;flex-wrap:wrap;gap:8px}
+details.set{margin-top:6px}
+details.set summary{cursor:pointer;font-weight:700;padding:8px 0}
+.want-area{margin:8px 0}
+.want-area h3{margin:6px 0 2px;font-size:.95rem}
+.wants{display:flex;flex-direction:column;gap:2px}
+.wants label{display:flex;align-items:center;gap:10px;min-height:44px}
+.wants input{width:22px;height:22px;flex:none;accent-color:var(--sea)}
+
+/* ---- Results ---- */
+#result{scroll-margin-top:10px}
+.res-h{display:flex;align-items:center;gap:10px}
+.res-h h2{margin:0}
+.season{display:flex;flex-wrap:wrap;gap:8px}
+.month{flex:1 1 200px;border:2px solid var(--line);border-radius:14px;padding:10px}
+.month.top{border-color:var(--sun);background:#FFFBEA}
+.month b{display:flex;align-items:center;gap:6px;font-size:1.05rem}
+.month small{display:block;color:var(--muted)}
+.sug{margin:8px 0;padding:10px;border-radius:12px;background:var(--sky)}
+.sug b{font-size:1.02rem}
+.day{margin:16px 0 0;border-top:3px solid var(--sea);padding-top:8px}
+.day-h{display:flex;align-items:baseline;flex-wrap:wrap;gap:6px 12px}
+.day-h h3{margin:0;font-size:1.3rem;font-weight:900;color:var(--sea)}
+.day-h span{color:var(--muted);font-weight:700}
+.stops{list-style:none;margin:8px 0 0;padding:0}
+.stop{display:grid;grid-template-columns:62px 22px minmax(0,1fr);column-gap:8px}
+.stop .time{font-weight:900;font-variant-numeric:tabular-nums;padding-top:2px}
+.stop .time small{display:block;font-weight:500;color:var(--muted)}
+.rail{position:relative}
+.rail::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:4px;margin-left:-2px;background:var(--sea);opacity:.55}
+.rail::after{content:"";position:absolute;left:50%;top:9px;width:16px;height:16px;margin-left:-8px;border-radius:50%;background:#fff;border:4px solid var(--coral)}
+.stop.leg .rail::after{display:none}
+.stop.leg .body{color:var(--muted);font-size:.88rem;display:flex;align-items:center;gap:6px;padding:2px 0}
+.stop.leg .ico{width:26px;height:26px}
+.body{padding:2px 0 14px}
+.name{font-weight:900;font-size:1.08rem}
+.tag{display:inline-block;font-size:.72rem;font-weight:700;padding:.05rem .5rem;border-radius:999px;vertical-align:middle;margin-left:4px}
+.tag.v{background:var(--ok-bg);color:var(--ok)} .tag.u{background:var(--warn-bg);color:var(--warn)}
+.meta{font-size:.9rem;color:var(--muted)}
+.meta strong{color:var(--ink)}
+.links{display:flex;flex-wrap:wrap;gap:8px 14px;margin-top:4px;font-size:.9rem}
+.links a{font-weight:700}
+.note{margin-top:4px;font-size:.85rem;background:var(--warn-bg);color:var(--warn);padding:.3rem .6rem;border-radius:8px}
+.lodge{margin:4px 0 8px 0;padding:10px;border-radius:12px;background:#F1F0FF}
+.lodge b{color:var(--iris)}
+.lodge ul{margin:4px 0 0;padding-left:1.2em}
+.alert{margin:10px 0;padding:.7rem .9rem;border-radius:12px;background:var(--warn-bg);color:var(--warn);font-size:.92rem}
+.alert.ok{background:var(--ok-bg);color:var(--ok)}
+.alert.bad{background:#FDE7E4;color:#9B2E1E}
+.rows{margin:6px 0}
+.rows div{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px solid var(--line)}
+.rows div span:last-child{font-variant-numeric:tabular-nums;font-weight:700;text-align:right}
+.rows small{display:block;color:var(--muted);font-weight:400}
+.rows .total{border-bottom:3px solid var(--ink);font-size:1.25rem;font-weight:900}
+.rows .total span:last-child{color:var(--coral)}
+.pp{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
+.pp div{background:var(--sky);border-radius:12px;padding:10px;text-align:center}
+.pp b{display:block;font-size:1.25rem;font-variant-numeric:tabular-nums}
+table.cmp{width:100%;border-collapse:collapse;font-size:.9rem;margin:6px 0}
+table.cmp th,table.cmp td{padding:6px 4px;border-bottom:1px solid var(--line);text-align:right}
+table.cmp th:first-child,table.cmp td:first-child{text-align:left}
+table.cmp tr.hit td{background:#E1F5E9}
+.print-row{display:flex;justify-content:flex-end;margin:12px 0}
+footer{margin-top:24px;color:var(--muted);font-size:.85rem}
+footer .deco{display:flex;gap:6px;justify-content:center;margin-bottom:8px}
+footer .deco .ico{width:40px;height:40px}
+
+@media (max-width:420px){.grid3{grid-template-columns:1fr 1fr 1fr;gap:6px}.stop{grid-template-columns:54px 20px minmax(0,1fr)}}
+/* スマホでは、選択欄を1列にして、文字が切れないようにする */
+@media (max-width:560px){.grid2,.grid3.sel{grid-template-columns:1fr}}
+select{text-overflow:ellipsis}
+.card,.alert,.month,.sug,.lodge,.pp div,.rows span{overflow-wrap:anywhere}
+table.cmp th,table.cmp td:nth-child(n+2){white-space:nowrap}
+table.cmp td:first-child{overflow-wrap:break-word}
+
+/* ---- 広告（ads.js が data-ad-slot の枠に表示します） ---- */
+.ad-block[hidden],.ad-slot[hidden]{display:none}
+.ad-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ad-head h2{margin:0;font-size:1.15rem;font-weight:900}
+.pr-badge{display:inline-block;padding:.05rem .6rem;border-radius:999px;background:var(--ink);color:#fff;font-size:.72rem;font-weight:900;letter-spacing:.08em}
+.ad-lead{margin:6px 0 16px;font-size:.85rem;color:var(--muted)}
+.ad-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:18px}
+.ad-slot{position:relative;background:#fff;border:2px dashed #9FC3D3;border-radius:16px;padding:12px 14px;text-align:center;min-height:120px}
+.ad-slot[data-rendered]{border-style:solid;border-color:var(--line)}
+.ad-label{position:absolute;top:-11px;left:14px;background:var(--ink);color:#fff;border-radius:999px;font-size:.72rem;font-weight:700;padding:0 10px}
+.ad-body{margin-top:12px;text-align:center;overflow-wrap:anywhere}
+.ad-body img{max-width:100%;height:auto}
+.ad-foot{margin:14px 0 0;font-size:.8rem;color:var(--muted)}
+footer .flinks{display:flex;flex-wrap:wrap;gap:6px 16px;justify-content:center;margin:8px 0}
+
+@media print{
+  body{background:#fff;font-size:11pt}
+  .no-print,.hero,.intro,.notice,form,.print-row,.ad-block{display:none!important}
+  .wrap{max-width:none;padding:0}
+  .card{box-shadow:none;border:1px solid #ccc;break-inside:avoid;margin:8px 0}
+  .day{break-inside:avoid}
+  a{color:#000;text-decoration:none}
+  .print-title{display:block!important}
+}
+.print-title{display:none;font-size:1.4rem;font-weight:900;margin:0 0 8px}
+</style>
+</head>
+<body>
+
+<!-- ===== イラスト部品（カラー） ===== -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <!-- 乗り物 -->
+    <symbol id="i-plane" viewBox="0 0 64 64"><g transform="rotate(-25 32 32)"><rect x="6" y="27" width="52" height="10" rx="5" fill="#fff" stroke="#2E6DB4" stroke-width="2"/><path d="M26 30 18 8h10l12 22z" fill="#4C9BE8" stroke="#2E6DB4" stroke-width="2" stroke-linejoin="round"/><path d="M26 34 18 56h10l12-22z" fill="#4C9BE8" stroke="#2E6DB4" stroke-width="2" stroke-linejoin="round"/><path d="M8 30 4 20h8l4 10z" fill="#E5533D"/><circle cx="50" cy="32" r="2" fill="#2E6DB4"/><circle cx="43" cy="32" r="1.6" fill="#2E6DB4"/></g></symbol>
+    <symbol id="i-train" viewBox="0 0 64 64"><path d="M4 44V30q0-10 12-10h22q18 0 24 18v6z" fill="#fff" stroke="#1F4E9C" stroke-width="2.2" stroke-linejoin="round"/><path d="M4 38h58v5H4z" fill="#2E7BD6"/><path d="M11 27h9v8h-9zM23 27h9v8h-9zM35 27h8v8h-8z" fill="#9AD0F5"/><path d="M47 27q6 0 10 8H47z" fill="#9AD0F5"/><circle cx="16" cy="48" r="4.5" fill="#3B4450"/><circle cx="46" cy="48" r="4.5" fill="#3B4450"/><path d="M2 53h60" stroke="#8AA0B8" stroke-width="3" stroke-linecap="round"/></symbol>
+    <symbol id="i-hbus" viewBox="0 0 64 64"><rect x="4" y="14" width="56" height="36" rx="8" fill="#3EA76A" stroke="#1F6E43" stroke-width="2"/><rect x="9" y="19" width="12" height="13" rx="2" fill="#CFF0FF"/><rect x="24" y="19" width="12" height="13" rx="2" fill="#CFF0FF"/><rect x="39" y="19" width="16" height="13" rx="2" fill="#CFF0FF"/><rect x="4" y="38" width="56" height="5" fill="#fff" opacity=".9"/><circle cx="18" cy="50" r="5.5" fill="#333"/><circle cx="46" cy="50" r="5.5" fill="#333"/></symbol>
+    <symbol id="i-bus" viewBox="0 0 64 64"><rect x="8" y="12" width="48" height="38" rx="8" fill="#1FA2B5" stroke="#0E6F7F" stroke-width="2"/><rect x="13" y="17" width="38" height="14" rx="3" fill="#CFF0FF"/><rect x="8" y="36" width="48" height="4" fill="#fff" opacity=".9"/><circle cx="20" cy="50" r="5" fill="#333"/><circle cx="44" cy="50" r="5" fill="#333"/><circle cx="16" cy="45" r="2" fill="#FFE27A"/><circle cx="48" cy="45" r="2" fill="#FFE27A"/></symbol>
+    <symbol id="i-charter" viewBox="0 0 64 64"><rect x="2" y="12" width="60" height="38" rx="8" fill="#F08A3C" stroke="#A85A15" stroke-width="2"/><rect x="7" y="17" width="10" height="13" rx="2" fill="#CFF0FF"/><rect x="20" y="17" width="10" height="13" rx="2" fill="#CFF0FF"/><rect x="33" y="17" width="10" height="13" rx="2" fill="#CFF0FF"/><rect x="46" y="17" width="12" height="13" rx="2" fill="#CFF0FF"/><rect x="2" y="37" width="60" height="5" fill="#FFE27A"/><circle cx="16" cy="50" r="5.5" fill="#333"/><circle cx="48" cy="50" r="5.5" fill="#333"/><path d="M32 12v-6l9 3-9 3" fill="#E5533D"/></symbol>
+    <symbol id="i-car" viewBox="0 0 64 64"><path d="M6 42l6-14q2-5 8-5h22q5 0 8 4l7 10q3 1 3 5v3H6z" fill="#E5533D" stroke="#9E2B1B" stroke-width="2" stroke-linejoin="round"/><path d="M18 28h12v9H14zM33 28h11l6 9H33z" fill="#CFF0FF"/><circle cx="19" cy="49" r="6" fill="#333"/><circle cx="47" cy="49" r="6" fill="#333"/><circle cx="19" cy="49" r="2.5" fill="#ccc"/><circle cx="47" cy="49" r="2.5" fill="#ccc"/></symbol>
+    <symbol id="i-taxi" viewBox="0 0 64 64"><rect x="24" y="12" width="16" height="8" rx="2" fill="#fff" stroke="#8A6A00" stroke-width="1.5"/><path d="M6 42l6-14q2-5 8-5h22q5 0 8 4l7 10q3 1 3 5v3H6z" fill="#F6C232" stroke="#9A7500" stroke-width="2" stroke-linejoin="round"/><path d="M18 28h12v9H14zM33 28h11l6 9H33z" fill="#CFF0FF"/><circle cx="19" cy="49" r="6" fill="#333"/><circle cx="47" cy="49" r="6" fill="#333"/><circle cx="19" cy="49" r="2.5" fill="#ccc"/><circle cx="47" cy="49" r="2.5" fill="#ccc"/></symbol>
+    <symbol id="i-walk" viewBox="0 0 64 64"><circle cx="34" cy="12" r="7" fill="#F2B58A"/><path d="M27 8q7-8 15 0z" fill="#E5533D"/><path d="M28 22h13l3 18h-6l-2-8-2 8-2 17h-6l3-20z" fill="#2E7BD6"/><path d="M41 24l8 12" stroke="#F2B58A" stroke-width="5" stroke-linecap="round"/><path d="M28 24l-7 12" stroke="#F2B58A" stroke-width="5" stroke-linecap="round"/><path d="M31 57l-1-14h6l5 14z" fill="#8A5A2B"/></symbol>
+    <!-- 季節 -->
+    <symbol id="i-sakura" viewBox="0 0 64 64"><g transform="translate(32 32)" fill="#F9A9C4" stroke="#E86A96" stroke-width="1.5"><ellipse rx="8" ry="13" cy="-12"/><ellipse rx="8" ry="13" cy="-12" transform="rotate(72)"/><ellipse rx="8" ry="13" cy="-12" transform="rotate(144)"/><ellipse rx="8" ry="13" cy="-12" transform="rotate(216)"/><ellipse rx="8" ry="13" cy="-12" transform="rotate(288)"/></g><circle cx="32" cy="32" r="5" fill="#FFD25A"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 64 64"><g stroke="#F08A3C" stroke-width="4" stroke-linecap="round"><path d="M32 4v8M32 52v8M4 32h8M52 32h8M12 12l6 6M46 46l6 6M52 12l-6 6M18 46l-6 6"/></g><circle cx="32" cy="32" r="14" fill="#FFCF3F" stroke="#F0A81C" stroke-width="2"/></symbol>
+    <symbol id="i-momiji" viewBox="0 0 64 64"><path d="M32 6l6 16 14-6-6 14 12 4-14 6 4 14-14-8-2 14-2-14-14 8 4-14-14-6 12-4-6-14 14 6z" fill="#E5602F" stroke="#B23A14" stroke-width="2" stroke-linejoin="round"/><path d="M32 40v18" stroke="#8A3B14" stroke-width="3" stroke-linecap="round"/></symbol>
+    <symbol id="i-snow" viewBox="0 0 64 64"><g stroke="#4C9BE8" stroke-width="4" stroke-linecap="round"><path d="M32 6v52M9.5 19l45 26M9.5 45l45-26"/></g><circle cx="32" cy="32" r="6" fill="#fff" stroke="#4C9BE8" stroke-width="3"/></symbol>
+    <!-- その他 -->
+    <symbol id="i-suitcase" viewBox="0 0 64 64"><path d="M24 16v-4q0-4 4-4h8q4 0 4 4v4" fill="none" stroke="#8A5A2B" stroke-width="4"/><rect x="6" y="16" width="52" height="38" rx="7" fill="#F08A3C" stroke="#A85A15" stroke-width="2"/><rect x="6" y="30" width="52" height="5" fill="#FFE27A"/><rect x="28" y="28" width="8" height="9" rx="2" fill="#fff" stroke="#A85A15" stroke-width="1.5"/><path d="M14 54v4M50 54v4" stroke="#8A5A2B" stroke-width="4" stroke-linecap="round"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 64 64"><path d="M32 4C21 4 13 12 13 22c0 14 19 36 19 36s19-22 19-36C51 12 43 4 32 4z" fill="#E5533D" stroke="#9E2B1B" stroke-width="2"/><circle cx="32" cy="22" r="8" fill="#fff"/></symbol>
+    <symbol id="i-camera" viewBox="0 0 64 64"><path d="M22 14l3-5h14l3 5" fill="#3B4450"/><rect x="4" y="14" width="56" height="38" rx="8" fill="#5A5FCB" stroke="#3A3E99" stroke-width="2"/><circle cx="32" cy="33" r="13" fill="#fff" stroke="#3A3E99" stroke-width="3"/><circle cx="32" cy="33" r="7" fill="#4C9BE8"/><circle cx="52" cy="22" r="3" fill="#FFD25A"/></symbol>
+    <symbol id="i-onsen" viewBox="0 0 64 64"><path d="M20 4q-6 8 0 14t0 10M32 2q-6 8 0 14t0 10M44 4q-6 8 0 14t0 10" fill="none" stroke="#9FB6C8" stroke-width="3" stroke-linecap="round"/><path d="M6 34h52v6q0 16-26 16T6 40z" fill="#4DC0D6" stroke="#0E7F92" stroke-width="2"/><path d="M12 42q6 4 10 0t10 0 10 0 8 0" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/><circle cx="46" cy="32" r="6" fill="#F2B58A"/></symbol>
+    <symbol id="i-crab" viewBox="0 0 64 64"><ellipse cx="32" cy="38" rx="17" ry="12" fill="#E5533D" stroke="#9E2B1B" stroke-width="2"/><path d="M10 26q-6-10 2-14 4 6 8 12zM54 26q6-10-2-14-4 6-8 12z" fill="#E5533D" stroke="#9E2B1B" stroke-width="2"/><path d="M14 44l-8 8M18 48l-6 10M50 44l8 8M46 48l6 10" stroke="#9E2B1B" stroke-width="3" stroke-linecap="round"/><circle cx="26" cy="30" r="3" fill="#fff"/><circle cx="38" cy="30" r="3" fill="#fff"/><circle cx="26" cy="30" r="1.5" fill="#222"/><circle cx="38" cy="30" r="1.5" fill="#222"/></symbol>
+    <symbol id="i-dino" viewBox="0 0 64 64"><path d="M8 46q-2-12 8-14l10-2q4-14 14-14 8 0 10 8l-6 2q-1 6-6 8l6 12v8h-8v-8l-6-4-8 4v8H12v-6q-4-2-4-2z" fill="#58B368" stroke="#2F7D3E" stroke-width="2" stroke-linejoin="round"/><circle cx="46" cy="18" r="2.4" fill="#fff"/><circle cx="46.6" cy="18" r="1.2" fill="#222"/><path d="M20 30l3-6 3 6M30 27l3-6 3 6" fill="#F5B93B" stroke="#C88A12" stroke-width="1.2"/></symbol>
+    <symbol id="i-yen" viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="#FFCF3F" stroke="#D99A0B" stroke-width="3"/><path d="M20 16l12 18 12-18M32 34v18M22 38h20M22 46h20" fill="none" stroke="#8A5A00" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-cal" viewBox="0 0 64 64"><rect x="6" y="10" width="52" height="46" rx="8" fill="#fff" stroke="#5A5FCB" stroke-width="3"/><path d="M6 24h52v-8q0-6-6-6H12q-6 0-6 6z" fill="#5A5FCB"/><path d="M20 4v10M44 4v10" stroke="#3A3E99" stroke-width="4" stroke-linecap="round"/><g fill="#E5533D"><circle cx="20" cy="34" r="3"/><circle cx="32" cy="34" r="3"/><circle cx="44" cy="34" r="3"/><circle cx="20" cy="46" r="3"/><circle cx="32" cy="46" r="3"/></g></symbol>
+    <symbol id="i-people" viewBox="0 0 64 64"><circle cx="20" cy="18" r="9" fill="#F2B58A"/><path d="M4 54q0-20 16-20t16 20z" fill="#2E7BD6"/><circle cx="44" cy="24" r="7" fill="#F2B58A"/><path d="M32 56q0-16 12-16t12 16z" fill="#F08A3C"/></symbol>
+    <symbol id="i-bed" viewBox="0 0 64 64"><rect x="4" y="30" width="56" height="16" rx="4" fill="#8A6DE0"/><rect x="4" y="18" width="10" height="34" rx="3" fill="#5A5FCB"/><rect x="16" y="22" width="16" height="10" rx="4" fill="#fff"/><path d="M4 52v6M60 52v6" stroke="#3A3E99" stroke-width="4" stroke-linecap="round"/></symbol>
+
+    <!-- 県のイラスト -->
+    <symbol id="p-gifu" viewBox="0 0 120 80"><rect width="120" height="80" fill="#CDEBFA"/><circle cx="100" cy="16" r="9" fill="#FFD25A"/><path d="M0 52l25-22 22 20 24-26 26 28 23-12v40H0z" fill="#8FA6E0"/><path d="M0 62q30-20 60-4t60-6v28H0z" fill="#5DB37A"/><g transform="translate(30 22)"><rect x="8" y="26" width="44" height="24" fill="#C7995B"/><path d="M0 30 30 0l30 30z" fill="#E6C66F" stroke="#B48A2F" stroke-width="2" stroke-linejoin="round"/><path d="M14 22l16-16 16 16" fill="none" stroke="#B48A2F" stroke-width="1.5"/><rect x="26" y="36" width="9" height="14" fill="#7A4E2D"/><rect x="14" y="34" width="8" height="7" fill="#FFE9A8"/><rect x="40" y="34" width="8" height="7" fill="#FFE9A8"/></g><g transform="translate(84 40)"><rect x="4" y="16" width="22" height="12" fill="#C7995B"/><path d="M0 18 15 2l15 16z" fill="#E6C66F" stroke="#B48A2F" stroke-width="1.5" stroke-linejoin="round"/></g><path d="M0 72q40-10 120 0v8H0z" fill="#3E9E5E"/></symbol>
+    <symbol id="p-fukui" viewBox="0 0 120 80"><rect width="120" height="80" fill="#D5F0FF"/><circle cx="18" cy="16" r="9" fill="#FFD25A"/><path d="M0 60q30-8 60-2t60-4v26H0z" fill="#F2C27A"/><path d="M60 60l20-22 12 10 14-6v28z" fill="#B9855A"/><g transform="translate(10 6)"><path d="M12 54q-3-16 10-19l14-3q6-20 20-20 12 0 15 11l-8 3q-2 8-9 11l8 16v11H50V54l-9-6-12 6v11H16V58q-4-2-4-4z" fill="#58B368" stroke="#2F7D3E" stroke-width="2" stroke-linejoin="round"/><circle cx="68" cy="25" r="3.2" fill="#fff"/><circle cx="69" cy="25" r="1.6" fill="#222"/><path d="M24 36l4-8 4 8M38 31l4-8 4 8M52 27l4-8 4 8" fill="#F5B93B" stroke="#C88A12" stroke-width="1.4" stroke-linejoin="round"/></g><path d="M0 74q30-6 60 0t60-2v8H0z" fill="#4DC0D6"/></symbol>
+    <symbol id="p-toyama" viewBox="0 0 120 80"><rect width="120" height="80" fill="#BFE3FA"/><circle cx="20" cy="18" r="9" fill="#FFD25A"/><path d="M0 62 30 26l14 14 20-32 22 30 12-10 22 34z" fill="#6C82D8"/><path d="M64 8 52 28l8-3 5 6 6-6 8 5-14-22z" fill="#fff"/><path d="M30 26 22 40l6-2 4 4 4-4 5 3-11-15z" fill="#fff"/><path d="M0 62q30-6 60 0t60-4v22H0z" fill="#5DB37A"/><path d="M0 70q30-4 60 0t60-2v12H0z" fill="#2F8F55"/><g fill="#1F6E43"><path d="M14 62l5-14 5 14z"/><path d="M96 63l4-12 4 12z"/></g></symbol>
+    <symbol id="p-ishikawa" viewBox="0 0 120 80"><rect width="120" height="80" fill="#D8EEF9"/><circle cx="102" cy="16" r="9" fill="#FFD25A"/><path d="M0 50q30-10 60-4t60-6v46H0z" fill="#5DB37A"/><path d="M0 58h120v22H0z" fill="#4FB6D6"/><path d="M8 66q8-3 16 0t16 0 16 0 16 0" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".8"/><g transform="translate(40 8)"><path d="M14 66 32 30M50 66 32 30" stroke="#9AA4AE" stroke-width="7" stroke-linecap="round"/><path d="M18 32h28l-2-8H20z" fill="#B7C0C8"/><path d="M8 26q24-14 48 0z" fill="#8E99A3"/><path d="M22 18h20l-4-8H26z" fill="#B7C0C8"/><circle cx="32" cy="8" r="4" fill="#8E99A3"/></g><g transform="translate(94 26)"><path d="M6 40V26" stroke="#7A4E2D" stroke-width="3"/><path d="M6 2l-10 14h6L-6 26h24L8 16h6z" fill="#1F6E43"/></g></symbol>
+  </defs>
+</svg>
+
+<div class="wrap">
+
+<noscript><p class="notice">このツールはJavaScriptを使います。ブラウザの設定でJavaScriptを有効にしてください。</p></noscript>
+
+<header class="hero">
+  <svg class="hero-art" viewBox="0 0 800 300" preserveAspectRatio="xMidYMax slice" role="img" aria-label="山、合掌造りの家、新幹線を描いたイラスト">
+    <defs><linearGradient id="hsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6FC1EE"/><stop offset="1" stop-color="#EAF7FD"/></linearGradient></defs>
+    <rect width="800" height="300" fill="url(#hsky)"/>
+    <circle cx="575" cy="84" r="50" fill="#FFD25A" opacity=".35"/><circle cx="575" cy="84" r="34" fill="#FFD25A"/>
+    <g fill="#fff" opacity=".95"><ellipse cx="110" cy="96" rx="48" ry="15"/><ellipse cx="142" cy="84" rx="30" ry="15"/><ellipse cx="420" cy="70" rx="44" ry="13"/><ellipse cx="448" cy="60" rx="26" ry="13"/><ellipse cx="590" cy="130" rx="38" ry="11"/></g>
+    <path d="M0 206 84 134l50 36 86-84 84 92 84-64 96 70 80-50 88 62 78-40 70 44v44H0z" fill="#8FA6E0"/>
+    <g fill="#fff"><path d="M220 86l-26 30 16-6 10 12 12-12 14 8z"/><path d="M84 134l-20 22 12-4 8 8 10-8 10 6z"/><path d="M388 122l-22 20 12-4 8 8 10-8 10 6z"/></g>
+    <path d="M0 238q120-56 260-8t260-6 280-10v86H0z" fill="#5DB37A"/>
+    <path d="M0 262q200-32 400-4t400-6v48H0z" fill="#3E9E5E"/>
+    <g fill="#1F6E43"><path d="M40 262l16-44 16 44z"/><path d="M62 264l12-32 12 32z"/><path d="M640 262l14-38 14 38z"/><path d="M664 264l10-28 10 28z"/></g>
+    <g transform="translate(470 168)"><rect x="6" y="58" width="112" height="46" fill="#C7995B"/><path d="M-8 64 62 -10l70 74z" fill="#E6C66F" stroke="#B48A2F" stroke-width="3" stroke-linejoin="round"/><path d="M14 52 62 6l48 46" fill="none" stroke="#B48A2F" stroke-width="2"/><rect x="52" y="74" width="20" height="30" fill="#7A4E2D"/><rect x="22" y="70" width="16" height="14" fill="#FFE9A8"/><rect x="86" y="70" width="16" height="14" fill="#FFE9A8"/></g>
+    <g transform="translate(176 206)"><rect x="4" y="32" width="64" height="28" fill="#C7995B"/><path d="M-6 36 36 -6l42 42z" fill="#E6C66F" stroke="#B48A2F" stroke-width="3" stroke-linejoin="round"/><rect x="30" y="42" width="12" height="18" fill="#7A4E2D"/></g>
+    <rect x="0" y="274" width="800" height="7" fill="#8FA0B4"/><rect x="0" y="281" width="800" height="19" fill="#6E8098"/>
+    <g transform="translate(250 240)"><path d="M0 34V18Q0 4 20 4h110q50 0 80 30z" fill="#fff" stroke="#1F4E9C" stroke-width="3" stroke-linejoin="round"/><path d="M0 24h210v7H0z" fill="#2E7BD6"/><path d="M14 12h20v9H14zM44 12h20v9H44zM74 12h20v9H74zM104 12h20v9h-20z" fill="#9AD0F5"/><path d="M136 12q34 0 50 12h-50z" fill="#9AD0F5"/><circle cx="34" cy="38" r="6" fill="#3B4450"/><circle cx="150" cy="38" r="6" fill="#3B4450"/></g>
+  </svg>
+  <div class="hero-text">
+    <h1>旅行計画作成ツール</h1>
+    <div class="edition"><b class="g">岐阜</b>・<b class="f">福井</b>・<b class="t">富山</b>・<b class="i">石川</b>版</div>
+  </div>
+</header>
+
+<p class="intro">行き先・日数・人数などを選ぶと、日程、費用、宿さがしの目安を作ります。入力した内容は、この端末のブラウザにだけ保存されます。</p>
+<p class="notice">料金や営業日は、確認した日時点の目安です。出発前に必ず公式サイトや電話で確認してください。宿や交通の予約は、ご自身でお願いします。</p>
+
+<form id="form" autocomplete="off" novalidate>
+
+<!-- 1 出発 -->
+<section class="card">
+  <h2><svg class="ico lg"><use href="#i-suitcase"/></svg>どこから行く？</h2>
+  <label class="field"><span>出発地</span><select id="origin"></select></label>
+  <div class="chips"><label class="chip"><input type="checkbox" id="localMeet"><span>現地集合（現地までの交通費なし）</span></label></div>
+  <p class="hint box">出発地から現地までの所要時間と交通費は、入力しなくて大丈夫です。出発地と行き先から計算して、結果に表示します。</p>
+</section>
+
+<!-- 2 いつ -->
+<section class="card">
+  <h2><svg class="ico lg"><use href="#i-cal"/></svg>いつ行く？</h2>
+  <div class="radio-row" role="radiogroup" aria-label="日程の決め方">
+    <label class="chip"><input type="radio" name="when" value="date"><span>日にちを決める</span></label>
+    <label class="chip"><input type="radio" name="when" value="month" checked><span>月で探す</span></label>
+    <label class="chip"><input type="radio" name="when" value="season"><span>季節で探す</span></label>
+    <label class="chip"><input type="radio" name="when" value="any"><span>おまかせ</span></label>
+  </div>
+  <div id="w-date" hidden><label class="field"><span>出発日</span><input id="date" type="date"></label></div>
+  <div id="w-month"><label class="field"><span>月</span>
+    <select id="month">
+      <option value="1">1月</option><option value="2">2月</option><option value="3">3月</option><option value="4">4月</option><option value="5">5月</option><option value="6">6月</option>
+      <option value="7">7月</option><option value="8">8月</option><option value="9">9月</option><option value="10" selected>10月</option><option value="11">11月</option><option value="12">12月</option>
+    </select></label></div>
+  <div id="w-season" hidden><label class="field"><span>季節</span>
+    <select id="season">
+      <option value="spring">春（3〜5月）</option><option value="summer">夏（6〜8月）</option><option value="autumn" selected>秋（9〜11月）</option><option value="winter">冬（12〜2月）</option>
+    </select></label></div>
+  <label class="field"><span>何泊する？</span>
+    <select id="nights">
+      <option value="0">日帰り</option><option value="1">1泊2日</option><option value="2" selected>2泊3日</option><option value="3">3泊4日</option><option value="4">4泊5日</option><option value="5">5泊6日</option><option value="6">6泊7日</option>
+    </select></label>
+</section>
+
+<!-- 3 どこへ -->
+<section class="card">
+  <h2><svg class="ico lg"><use href="#i-pin"/></svg>どこへ行く？（複数選べます）</h2>
+  <p class="hint">県ごとにまとめて選ぶ（大まかに）ことも、エリアを選ぶ（特定）こともできます。</p>
+  <div id="prefs"></div>
+</section>
+
+<!-- 4 人数・予算 -->
+<section class="card">
+  <h2><svg class="ico lg"><use href="#i-people"/></svg>人数と予算</h2>
+  <div class="grid3">
+    <label class="field"><span>大人（中学生以上）</span><input id="adults" type="number" inputmode="numeric" min="1" max="40" value="2"></label>
+    <label class="field"><span>小学生</span><input id="children" type="number" inputmode="numeric" min="0" max="40" value="0"></label>
+    <label class="field"><span>未就学児</span><input id="infants" type="number" inputmode="numeric" min="0" max="20" value="0"></label>
+  </div>
+  <div class="grid2">
+    <label class="field"><span>予算（旅行費用すべて・全員の合計・円）</span><input id="budget" type="number" inputmode="numeric" min="0" placeholder="未入力でもOK"></label>
+    <label class="field"><span>宿のタイプ</span>
+      <select id="lodgeType"><option value="biz">ビジネスホテル（安さ重視）</option><option value="city" selected>シティ・観光ホテル</option><option value="onsen">温泉旅館（1泊2食付き）</option></select></label>
+  </div>
+  <div class="grid2">
+    <label class="field"><span>1部屋の人数</span><input id="perRoom" type="number" inputmode="numeric" min="1" max="8" value="2"></label>
+    <label class="field"><span>宿の取り方</span>
+      <select id="lodgeStyle"><option value="tour" selected>泊ごとに移動（周遊）</option><option value="base">同じ宿に連泊</option></select></label>
+  </div>
+</section>
+
+<!-- 5 移動手段 -->
+<section class="card">
+  <h2><svg class="ico lg"><use href="#i-car"/></svg>移動手段（第3まで）</h2>
+  <div class="modes" aria-hidden="true">
+    <span><svg class="ico"><use href="#i-plane"/></svg>飛行機</span>
+    <span><svg class="ico"><use href="#i-train"/></svg>新幹線・電車</span>
+    <span><svg class="ico"><use href="#i-hbus"/></svg>高速バス</span>
+    <span><svg class="ico"><use href="#i-car"/></svg>レンタカー</span>
+    <span><svg class="ico"><use href="#i-taxi"/></svg>タクシー</span>
+    <span><svg class="ico"><use href="#i-charter"/></svg>貸切バス</span>
+    <span><svg class="ico"><use href="#i-bus"/></svg>路線バス</span>
+    <span><svg class="ico"><use href="#i-walk"/></svg>徒歩</span>
+  </div>
+  <p class="hint">選んだ順に使います。現地までの移動と、現地での移動の両方に反映します。</p>
+  <div class="grid3 sel">
+    <label class="field"><span>第1利用</span><select class="mode" id="m1"></select></label>
+    <label class="field"><span>第2利用</span><select class="mode" id="m2"></select></label>
+    <label class="field"><span>第3利用</span><select class="mode" id="m3"></select></label>
+  </div>
+</section>
+
+<!-- 6 行きたい場所 -->
+<section class="card">
+  <h2><svg class="ico lg"><use href="#i-camera"/></svg>行きたい場所</h2>
+  <span class="lbl">興味のあること</span>
+  <div class="chips" id="interests"></div>
+  <div id="wants" style="margin-top:12px"></div>
+  <p class="hint">選ばなくても、興味に合わせて提案します。</p>
+</section>
+
+<!-- 7 詳細設定 -->
+<section class="card">
+  <details class="set">
+    <summary>詳しい設定（費用の目安を変える）</summary>
+    <p class="hint">下の金額は一般的な目安の初期値です。実際の料金は時期や会社で変わるので、必要に応じて書き換えてください。</p>
+    <div class="grid2">
+      <label class="field"><span>宿（ビジネス）1人1泊</span><input id="sLodgeBiz" type="number" inputmode="numeric" value="8000"></label>
+      <label class="field"><span>宿（シティ・観光）1人1泊</span><input id="sLodgeCity" type="number" inputmode="numeric" value="13000"></label>
+      <label class="field"><span>宿（温泉旅館）1人1泊</span><input id="sLodgeOnsen" type="number" inputmode="numeric" value="25000"></label>
+      <label class="field"><span>食事（昼・夕）1人1日</span><input id="sMeal" type="number" inputmode="numeric" value="3500"></label>
+      <label class="field"><span>レンタカー1日1台</span><input id="sRental" type="number" inputmode="numeric" value="8000"></label>
+      <label class="field"><span>ガソリン・高速（1kmあたり）</span><input id="sFuel" type="number" inputmode="numeric" value="20"></label>
+      <label class="field"><span>タクシー（1kmあたり）</span><input id="sTaxi" type="number" inputmode="numeric" value="450"></label>
+      <label class="field"><span>貸切バス1日1台</span><input id="sCharter" type="number" inputmode="numeric" value="80000"></label>
+      <label class="field"><span>バス・電車（1kmあたり）</span><input id="sPT" type="number" inputmode="numeric" value="25"></label>
+      <label class="field"><span>お土産・おやつ・雑費（1人・旅行全体）</span><input id="sMisc" type="number" inputmode="numeric" value="5000"></label>
+    </div>
+  </details>
+</section>
+
+<button class="btn go" type="submit" id="goBtn"><svg class="ico lg"><use href="#i-suitcase"/></svg>プランを作る</button>
+<p class="hint" style="text-align:center"><button class="btn small" type="button" id="resetBtn">入力をもとに戻す</button></p>
+</form>
+
+<div id="result" aria-live="polite"></div>
+
+<!-- 広告枠：スプレッドシートの「ad1〜ad4」の行が ON になっているものだけ表示されます（設定は ads.js） -->
+<section class="card ad-block no-print" aria-label="広告" hidden>
+  <div class="ad-head"><span class="pr-badge">PR</span><h2>おすすめ・広告</h2></div>
+  <p class="ad-lead">旅のしたくに役立つサービスのご紹介です。内容や料金は、リンク先の公式ページでご確認ください。</p>
+  <div class="ad-row">
+    <div class="ad-slot" data-ad-slot="ad1" hidden>
+      <span class="ad-label">広告</span>
+      <div class="ad-body"></div>
+    </div>
+    <div class="ad-slot" data-ad-slot="ad2" hidden>
+      <span class="ad-label">広告</span>
+      <div class="ad-body"></div>
+    </div>
+    <div class="ad-slot" data-ad-slot="ad3" hidden>
+      <span class="ad-label">広告</span>
+      <div class="ad-body"></div>
+    </div>
+    <div class="ad-slot" data-ad-slot="ad4" hidden>
+      <span class="ad-label">広告</span>
+      <div class="ad-body"></div>
+    </div>
+  </div>
+  <p class="ad-foot">アフィリエイト広告を含みます。広告のリンクを経由して申し込みなどをされると、運営者に収益が入ることがあります。詳しくは<a href="unei.html#ads">広告に関する表記</a>をご覧ください。</p>
+</section>
+
+<footer>
+  <div class="deco" aria-hidden="true">
+    <svg class="ico"><use href="#i-crab"/></svg><svg class="ico"><use href="#i-dino"/></svg><svg class="ico"><use href="#i-onsen"/></svg><svg class="ico"><use href="#i-sakura"/></svg><svg class="ico"><use href="#i-momiji"/></svg><svg class="ico"><use href="#i-snow"/></svg>
+  </div>
+  <p class="flinks"><a href="unei.html">運営者情報・連絡先</a><a href="privacy.html">プライバシーポリシー</a><a href="unei.html#ads">広告に関する表記</a></p>
+  <p id="dataInfo"></p>
+  <p>距離や移動時間は、地図上の位置から出した概算です。実際の道路や運行状況で変わります。</p>
+  <p>このツールはアフィリエイト広告（PR）を掲載しています。運営：地域情報室</p>
+</footer>
+
+</div>
+
+<script>
+(function(){
+'use strict';
+
+/* =====================================================
+   データ（確認した日：2026-09-20）
+   v が入っている施設だけ「確認済み」。それ以外は「未確認」と表示します。
+   ===================================================== */
+var VERIFIED = '2026-09-20';
+
+var PREFS = [
+  {id:'ishikawa', name:'石川県', ill:'p-ishikawa'},
+  {id:'toyama',   name:'富山県', ill:'p-toyama'},
+  {id:'fukui',    name:'福井県', ill:'p-fukui'},
+  {id:'gifu',     name:'岐阜県', ill:'p-gifu'}
+];
+
+var AREAS = [
+  {id:'kanazawa', pref:'ishikawa', name:'金沢',        rail:true,  pt:'good'},
+  {id:'toyama',   pref:'toyama',   name:'富山・高岡',  rail:true,  pt:'good'},
+  {id:'tateyama', pref:'toyama',   name:'立山・黒部',  rail:false, pt:'limited'},
+  {id:'fukui',    pref:'fukui',    name:'福井・永平寺・勝山', rail:true, pt:'limited'},
+  {id:'takayama', pref:'gifu',     name:'高山',        rail:true,  pt:'good'},
+  {id:'shirakawa',pref:'gifu',     name:'白川郷',      rail:false, pt:'limited'},
+  {id:'gero',     pref:'gifu',     name:'下呂温泉',    rail:true,  pt:'good'}
+];
+
+var TAGS = {culture:'歴史・文化', nature:'自然・絶景', walk:'街歩き・グルメ', kids:'子どもと楽しむ', onsen:'温泉'};
+
+/* fee: a=大人, c=小学生（小人）。null は料金未確認（合計に含めません）。 */
+var SPOTS = [
+ {id:'kenrokuen', area:'kanazawa', name:'兼六園', tags:['culture','nature'], stay:60,
+  fee:{a:320,c:100,note:'大人は18歳以上、小人は6〜17歳'}, v:VERIFIED, tel:'076-234-3800',
+  hours:'7:00〜18:00（10/16〜2月は8:00〜17:00）', closed:'無休',
+  last:function(m){return (m>=10||m<=2)?990:1050;}, best:[4,11,12,1,2],
+  lat:36.5621, lon:136.6626, note:'桜の時期などに、無料開園や夜間開園の日があります。公式サイトで確認を。'},
+ {id:'omicho', area:'kanazawa', name:'近江町市場', tags:['walk'], stay:60,
+  fee:{a:0,c:0,note:'入場は無料（食事代は別）'}, v:null, hours:'お店により異なります', closed:'お店により異なります',
+  best:[11,12,1,2,3], lat:36.5717, lon:136.6577, note:'冬は海の幸が人気です。'},
+ {id:'higashi', area:'kanazawa', name:'ひがし茶屋街', tags:['culture','walk'], stay:60,
+  fee:{a:0,c:0,note:'散策は無料'}, v:null, hours:'お店により異なります', closed:'お店により異なります',
+  best:[], lat:36.5734, lon:136.6669},
+ {id:'kanazawa21', area:'kanazawa', name:'金沢21世紀美術館', tags:['culture','kids'], stay:90,
+  fee:null, v:null, hours:'要確認', closed:'要確認', best:[], lat:36.5608, lon:136.6584,
+  note:'展覧会ごとに料金が違います。'},
+
+ {id:'kansui', area:'toyama', name:'富岩運河環水公園', tags:['walk','nature'], stay:45,
+  fee:{a:0,c:0,note:'入園は無料'}, v:null, hours:'要確認', closed:'要確認', best:[4,5,10], lat:36.7119, lon:137.2131},
+ {id:'zuiryuji', area:'toyama', name:'瑞龍寺（高岡）', tags:['culture'], stay:60,
+  fee:null, v:null, hours:'要確認', closed:'要確認', best:[10,11], lat:36.7470, lon:137.0200},
+
+ {id:'tateyama', area:'tateyama', name:'立山黒部アルペンルート（室堂）', tags:['nature'], stay:300,
+  fee:null, v:null, hours:'要確認', closed:'冬は通行止め（例年4月中旬〜11月頃の運行）',
+  openM:[4,5,6,7,8,9,10,11], best:[4,5,6,10], lat:36.5783, lon:137.3117,
+  note:'区間ごとに運賃が違い、大きな金額になります。天候による運休もあります。'},
+ {id:'kurobe', area:'tateyama', name:'黒部峡谷トロッコ電車', tags:['nature','kids'], stay:240,
+  fee:null, v:null, hours:'要確認', closed:'冬は運休（例年4月下旬〜11月頃の運行）',
+  openM:[4,5,6,7,8,9,10,11], best:[10,11], lat:36.8144, lon:137.5920},
+
+ {id:'eiheiji', area:'fukui', name:'永平寺', tags:['culture'], stay:90,
+  fee:{a:700,c:300,note:'未就学児は無料'}, v:VERIFIED, tel:'0776-63-3102',
+  hours:'8:30〜16:30（入場は16:00まで）', closed:'無休', last:function(){return 960;},
+  best:[10,11,1,2], lat:36.0550, lon:136.3560, note:'駐車場は有料です（金額は現地で確認を）。'},
+ {id:'kyoryu', area:'fukui', name:'福井県立恐竜博物館', tags:['kids','culture'], stay:150,
+  fee:{a:1000,c:500,note:'高校・大学生800円、70歳以上500円、未就学児は無料（常設展）'}, v:VERIFIED, tel:'0779-88-0001',
+  hours:'9:00〜17:00（入館は16:30まで）', closed:'月2回（第2・4木曜の一覧を確認。ほかの情報では水曜とも）、年末年始（12/29〜1/2）、臨時休館あり',
+  closedRules:[{wd:4,nth:[2,4]}], closedRanges:[['12-29','01-02']], last:function(){return 990;},
+  best:[], lat:36.0850, lon:136.5300, note:'休館日は年や時期で変わります。日時指定の事前予約が必要という案内もあるので、公式サイトで確認してください。特別展は別料金です。'},
+ {id:'tojinbo', area:'fukui', name:'東尋坊', tags:['nature'], stay:60,
+  fee:{a:0,c:0,note:'見学は無料'}, v:null, hours:'いつでも見学できます', closed:'なし',
+  best:[5,6,7,8,9], lat:36.2360, lon:136.1280},
+ {id:'ichijodani', area:'fukui', name:'一乗谷朝倉氏遺跡', tags:['culture'], stay:90,
+  fee:null, v:null, hours:'要確認', closed:'要確認', best:[4,10,11], lat:36.0300, lon:136.2960},
+
+ {id:'jinya', area:'takayama', name:'高山陣屋', tags:['culture'], stay:60,
+  fee:{a:440,c:0,note:'高校生以下は無料'}, v:VERIFIED, tel:'0577-32-0643', url:'https://jinya.gifu.jp/',
+  hours:'4〜10月 8:45〜17:00（入場16:30まで）／11〜3月 8:45〜16:30（入場16:00まで）', closed:'12/29〜1/3',
+  closedRanges:[['12-29','01-03']], last:function(m){return (m>=4&&m<=10)?990:960;},
+  best:[4,10,11], lat:36.1400, lon:137.2580},
+ {id:'furuimachi', area:'takayama', name:'古い町並み（さんまち通り）', tags:['walk','culture'], stay:90,
+  fee:{a:0,c:0,note:'散策は無料'}, v:null, hours:'お店により異なります', closed:'お店により異なります',
+  best:[4,10,11,1,2], lat:36.1420, lon:137.2610},
+ {id:'miyagawa', area:'takayama', name:'宮川朝市', tags:['walk'], stay:45,
+  fee:{a:0,c:0,note:'入場は無料'}, v:null, hours:'午前中の市（時間は要確認）', closed:'要確認',
+  window:[420,660], best:[], lat:36.1450, lon:137.2590},
+
+ {id:'shirakawa', area:'shirakawa', name:'白川郷（荻町合掌造り集落）', tags:['culture','nature'], stay:120,
+  fee:{a:0,c:0,note:'集落の散策は無料。展望台や家屋の内部見学、駐車場は別料金の場合があります'}, v:null,
+  hours:'要確認', closed:'要確認', best:[1,2,6,10,11], lat:36.2570, lon:136.9060},
+
+ {id:'gero-gassho', area:'gero', name:'下呂温泉合掌村', tags:['culture','kids'], stay:90,
+  fee:null, v:null, hours:'要確認', closed:'要確認', best:[], lat:35.8100, lon:137.2460},
+ {id:'gero-town', area:'gero', name:'下呂温泉街の散策・足湯', tags:['onsen','walk'], stay:60,
+  fee:{a:0,c:0,note:'散策は無料（施設により有料）'}, v:null, hours:'要確認', closed:'要確認',
+  best:[], lat:35.8058, lon:137.2410}
+];
+
+/* 宿の候補（名称のみ確認。料金と連絡先は公式サイトで確認してください） */
+var LODGES = {
+  kanazawa:[
+    'ホテルマイステイズ金沢キャッスル','ダイワロイネットホテル金沢駅西口','ザ・スクエアホテル金沢',
+    'ホテルクラウンヒルズ金沢香林坊','ANAクラウンプラザホテル金沢'
+  ]
+};
+
+var CITIES = {
+  sapporo:{n:'札幌',lat:43.06,lon:141.35,g:'北海道・東北'}, aomori:{n:'青森',lat:40.82,lon:140.74,g:'北海道・東北'}, morioka:{n:'盛岡',lat:39.70,lon:141.15,g:'北海道・東北'},
+  akita:{n:'秋田',lat:39.72,lon:140.10,g:'北海道・東北'}, sendai:{n:'仙台',lat:38.27,lon:140.87,g:'北海道・東北'}, yamagata:{n:'山形',lat:38.24,lon:140.36,g:'北海道・東北'}, fukushima:{n:'福島',lat:37.76,lon:140.47,g:'北海道・東北'},
+  mito:{n:'水戸',lat:36.34,lon:140.45,g:'関東'}, utsunomiya:{n:'宇都宮',lat:36.56,lon:139.88,g:'関東'}, maebashi:{n:'前橋',lat:36.39,lon:139.06,g:'関東'},
+  saitama:{n:'さいたま',lat:35.86,lon:139.65,g:'関東'}, chiba:{n:'千葉',lat:35.61,lon:140.11,g:'関東'}, tokyo:{n:'東京',lat:35.68,lon:139.77,g:'関東'}, yokohama:{n:'横浜',lat:35.47,lon:139.62,g:'関東'},
+  niigata:{n:'新潟',lat:37.92,lon:139.04,g:'甲信越'}, nagano:{n:'長野',lat:36.65,lon:138.19,g:'甲信越'}, kofu:{n:'甲府',lat:35.66,lon:138.57,g:'甲信越'},
+  shizuoka:{n:'静岡',lat:34.98,lon:138.38,g:'東海'}, nagoya:{n:'名古屋',lat:35.17,lon:136.88,g:'東海'}, tsu:{n:'津',lat:34.73,lon:136.51,g:'東海'},
+  gifu_o:{n:'岐阜',lat:35.42,lon:136.76,g:'岐阜・北陸'}, kanazawa_o:{n:'金沢',lat:36.56,lon:136.66,g:'岐阜・北陸'}, toyama_o:{n:'富山',lat:36.70,lon:137.21,g:'岐阜・北陸'}, fukui_o:{n:'福井',lat:36.06,lon:136.22,g:'岐阜・北陸'},
+  otsu:{n:'大津',lat:35.00,lon:135.87,g:'近畿'}, kyoto:{n:'京都',lat:35.01,lon:135.77,g:'近畿'}, osaka:{n:'大阪',lat:34.70,lon:135.50,g:'近畿'}, kobe:{n:'神戸',lat:34.69,lon:135.20,g:'近畿'},
+  nara:{n:'奈良',lat:34.69,lon:135.83,g:'近畿'}, wakayama:{n:'和歌山',lat:34.23,lon:135.17,g:'近畿'},
+  tottori:{n:'鳥取',lat:35.50,lon:134.24,g:'中国・四国'}, matsue:{n:'松江',lat:35.47,lon:133.05,g:'中国・四国'}, okayama:{n:'岡山',lat:34.67,lon:133.92,g:'中国・四国'}, hiroshima:{n:'広島',lat:34.40,lon:132.46,g:'中国・四国'},
+  yamaguchi:{n:'山口',lat:34.19,lon:131.47,g:'中国・四国'}, tokushima:{n:'徳島',lat:34.07,lon:134.55,g:'中国・四国'}, takamatsu:{n:'高松',lat:34.35,lon:134.05,g:'中国・四国'},
+  matsuyama:{n:'松山',lat:33.84,lon:132.77,g:'中国・四国'}, kochi:{n:'高知',lat:33.56,lon:133.53,g:'中国・四国'},
+  fukuoka:{n:'福岡（博多）',lat:33.59,lon:130.42,g:'九州・沖縄'}, saga:{n:'佐賀',lat:33.25,lon:130.30,g:'九州・沖縄'}, nagasaki:{n:'長崎',lat:32.75,lon:129.87,g:'九州・沖縄'},
+  kumamoto:{n:'熊本',lat:32.79,lon:130.74,g:'九州・沖縄'}, oita:{n:'大分',lat:33.24,lon:131.61,g:'九州・沖縄'}, miyazaki:{n:'宮崎',lat:31.91,lon:131.42,g:'九州・沖縄'},
+  kagoshima:{n:'鹿児島',lat:31.58,lon:130.55,g:'九州・沖縄'}, naha:{n:'那覇',lat:26.21,lon:127.68,g:'九州・沖縄'}
+};
+var AIRPORT_AREAS = {kanazawa:1, toyama:1};
+/* 新幹線・電車で、駅から先や乗り継ぎにかかる分（概算） */
+var RAIL_EXTRA = {takayama:{min:60,fare:1500}, gero:{min:60,fare:1500}, shirakawa:{min:120,fare:2500}, tateyama:{min:90,fare:1500}};
+
+var MODES = {
+  plane:  {n:'飛行機',       ico:'i-plane',   long:true,  local:false},
+  rail:   {n:'新幹線・電車', ico:'i-train',   long:true,  local:true},
+  hbus:   {n:'高速バス',     ico:'i-hbus',    long:true,  local:false},
+  rental: {n:'レンタカー',   ico:'i-car',     long:false, local:true},
+  taxi:   {n:'タクシー',     ico:'i-taxi',    long:false, local:true},
+  charter:{n:'貸切バス',     ico:'i-charter', long:true,  local:true},
+  bus:    {n:'路線バス',     ico:'i-bus',     long:false, local:true},
+  own:    {n:'自家用車',     ico:'i-car',     long:true,  local:true},
+  walk:   {n:'徒歩',         ico:'i-walk',    long:false, local:true}
+};
+var MIN_PER_KM = {rental:1.4, own:1.4, taxi:1.4, charter:1.6, bus:2.2, rail:1.5, walk:13};
+var OVERHEAD   = {rental:10,  own:10,  taxi:5,   charter:10,  bus:15,  rail:10,  walk:0};
+
+var SEASONS = {spring:[3,4,5], summer:[6,7,8], autumn:[9,10,11], winter:[12,1,2]};
+var SEASON_ICON = function(m){ return m>=3&&m<=5?'i-sakura':(m>=6&&m<=8?'i-sun':(m>=9&&m<=11?'i-momiji':'i-snow')); };
+var WD = ['日','月','火','水','木','金','土'];
+var STORE_KEY = 'tabi-keikaku-gifu-fukui-toyama-ishikawa-v1';
+
+/* =====================================================
+   ユーティリティ
+   ===================================================== */
+function $(s,r){return (r||document).querySelector(s);}
+function $$(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));}
+function fmtV(v){var m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(v||'');return m?(+m[1])+'年'+(+m[2])+'月'+(+m[3])+'日':String(v||'');}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function num(v){var n=parseFloat(v);return isNaN(n)?0:n;}
+function int(v){var n=parseInt(v,10);return isNaN(n)?0:n;}
+function yen(n){return '¥'+Math.round(n).toLocaleString('ja-JP');}
+function pad(n){return (n<10?'0':'')+n;}
+function fmtT(min){min=Math.round(min);var h=Math.floor(min/60),m=min%60;return h+':'+pad(m);}
+function fmtDur(min){min=Math.round(min);if(min<60)return min+'分';var h=Math.floor(min/60),m=min%60;return h+'時間'+(m?m+'分':'');}
+function addDays(d,n){var x=new Date(d.getFullYear(),d.getMonth(),d.getDate());x.setDate(x.getDate()+n);return x;}
+function fmtDate(d){return d.getFullYear()+'年'+(d.getMonth()+1)+'月'+d.getDate()+'日（'+WD[d.getDay()]+'）';}
+function searchUrl(q){return 'https://www.google.com/search?q='+encodeURIComponent(q);}
+function mapUrl(q){return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q);}
+function areaOf(id){return AREAS.filter(function(a){return a.id===id;})[0];}
+function spotOf(id){return SPOTS.filter(function(s){return s.id===id;})[0];}
+
+var R=6371;
+function hav(a,b){
+  var r=Math.PI/180, dLat=(b.lat-a.lat)*r, dLon=(b.lon-a.lon)*r;
+  var x=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(a.lat*r)*Math.cos(b.lat*r)*Math.sin(dLon/2)*Math.sin(dLon/2);
+  return 2*R*Math.asin(Math.sqrt(x));
+}
+function road(a,b){return hav(a,b)*1.5;}
+function cent(areaId){
+  var l=SPOTS.filter(function(s){return s.area===areaId;});
+  var lat=0,lon=0;l.forEach(function(s){lat+=s.lat;lon+=s.lon;});
+  return {lat:lat/l.length,lon:lon/l.length,area:areaId};
+}
+
+/* =====================================================
+   営業・季節の判定
+   ===================================================== */
+function inRange(md,from,to){return from<=to?(md>=from&&md<=to):(md>=from||md<=to);}
+function isOpen(s,date,month){
+  if(s.openM && s.openM.indexOf(month)<0) return false;
+  if(date){
+    var md=pad(date.getMonth()+1)+'-'+pad(date.getDate());
+    if(s.closedRanges){for(var i=0;i<s.closedRanges.length;i++){if(inRange(md,s.closedRanges[i][0],s.closedRanges[i][1]))return false;}}
+    if(s.closedRules){for(var j=0;j<s.closedRules.length;j++){
+      var r=s.closedRules[j];
+      if(date.getDay()===r.wd && r.nth.indexOf(Math.ceil(date.getDate()/7))>=0) return false;
+    }}
+  }
+  return true;
+}
+function lastEntry(s,m){return typeof s.last==='function'?s.last(m):null;}
+function monthScore(m,spots,wanted){
+  var sc=0,good=[],bad=[];
+  spots.forEach(function(s){
+    var w=wanted[s.id]?3:1;
+    if(s.openM && s.openM.indexOf(m)<0){sc-=5*w;bad.push(s.name);}
+    else if(s.best && s.best.indexOf(m)>=0){sc+=2*w;good.push(s.name);}
+    else sc+=1*w;
+  });
+  return {m:m,sc:sc,good:good,bad:bad};
+}
+
+/* =====================================================
+   画面の組み立て（フォーム）
+   ===================================================== */
+function buildForm(){
+  // 県・エリア
+  var h='';
+  PREFS.forEach(function(p){
+    h+='<div class="pref" data-p="'+p.id+'"><div class="pref-h"><svg viewBox="0 0 120 80" aria-hidden="true"><use href="#'+p.ill+'"/></svg><b>'+esc(p.name)+'</b>'+
+       '<button type="button" class="btn small all" data-pref="'+p.id+'">県ぜんぶ</button></div><div class="chips">';
+    AREAS.filter(function(a){return a.pref===p.id;}).forEach(function(a){
+      h+='<label class="chip"><input type="checkbox" name="area" value="'+a.id+'"><span>'+esc(a.name)+'</span></label>';
+    });
+    h+='</div></div>';
+  });
+  $('#prefs').innerHTML=h;
+
+  // 興味
+  var ih='';
+  Object.keys(TAGS).forEach(function(k){ih+='<label class="chip"><input type="checkbox" name="interest" value="'+k+'"><span>'+esc(TAGS[k])+'</span></label>';});
+  $('#interests').innerHTML=ih;
+
+  // 移動手段
+  var opts='<option value="">選ばない</option>';
+  Object.keys(MODES).forEach(function(k){opts+='<option value="'+k+'">'+esc(MODES[k].n)+'</option>';});
+  $$('.mode').forEach(function(s){s.innerHTML=opts;});
+  $('#m1').value='rail';$('#m2').value='rental';$('#m3').value='';
+
+  var vs=SPOTS.filter(function(s){return s.v;});
+  $('#dataInfo').textContent='このツールに入っている観光地は'+SPOTS.length+'か所です。そのうち、料金や連絡先を実際に調べて確認できたのは'+vs.length+'か所（'+vs.map(function(s){return s.name;}).join('、')+'）で、「確認済」と調べた日を表示しています。残りの'+(SPOTS.length-vs.length)+'か所は、料金や営業時間をまだ確認できていないので「未確認」と表示します。そのうち料金が分からない場所は、料金を合計に入れていません（無料とされる場所は0円で計算しています）。出発前に、公式サイトで確認してください。';
+}
+
+function renderWants(keep){
+  var sel=$$('input[name=area]:checked').map(function(i){return i.value;});
+  var checked=keep||$$('input[name=want]:checked').map(function(i){return i.value;});
+  var h='';
+  if(!sel.length){$('#wants').innerHTML='<p class="hint">行き先を選ぶと、ここに観光地が出ます。</p>';return;}
+  sel.forEach(function(aid){
+    var a=areaOf(aid);
+    h+='<div class="want-area"><h3>'+esc(a.name)+'</h3><div class="wants">';
+    SPOTS.filter(function(s){return s.area===aid;}).forEach(function(s){
+      h+='<label><input type="checkbox" name="want" value="'+s.id+'"'+(checked.indexOf(s.id)>=0?' checked':'')+'>'+esc(s.name)+'</label>';
+    });
+    h+='</div></div>';
+  });
+  $('#wants').innerHTML=h;
+}
+
+function updateWhen(){
+  var v=($('input[name=when]:checked')||{}).value;
+  $('#w-date').hidden=(v!=='date');
+  $('#w-month').hidden=(v!=='month');
+  $('#w-season').hidden=(v!=='season');
+}
+function longModeOf(prefs){
+  for(var i=0;i<prefs.length;i++){var m=prefs[i];if(m&&MODES[m]&&MODES[m].long)return m;}
+  return 'rail';
+}
+function buildOrigins(){
+  var groups={},order=[];
+  Object.keys(CITIES).forEach(function(k){var g=CITIES[k].g;if(!groups[g]){groups[g]=[];order.push(g);}groups[g].push(k);});
+  var o='<option value="">選んでください</option>';
+  order.forEach(function(g){o+='<optgroup label="'+esc(g)+'">';groups[g].forEach(function(k){o+='<option value="'+k+'">'+esc(CITIES[k].n)+'</option>';});o+='</optgroup>';});
+  $('#origin').innerHTML=o;
+}
+function updateOriginUI(){$('#origin').disabled=$('#localMeet').checked;}
+
+/* =====================================================
+   保存・復元
+   ===================================================== */
+var FIELD_IDS=['origin','date','month','season','nights','adults','children','infants','budget','lodgeType','perRoom','lodgeStyle','m1','m2','m3',
+  'sLodgeBiz','sLodgeCity','sLodgeOnsen','sMeal','sRental','sFuel','sTaxi','sCharter','sPT','sMisc'];
+function saveForm(){
+  try{
+    var o={f:{},when:($('input[name=when]:checked')||{}).value,area:[],want:[],interest:[]};
+    FIELD_IDS.forEach(function(id){o.f[id]=$('#'+id).value;});
+    o.area=$$('input[name=area]:checked').map(function(i){return i.value;});
+    o.want=$$('input[name=want]:checked').map(function(i){return i.value;});
+    o.interest=$$('input[name=interest]:checked').map(function(i){return i.value;});
+    o.localMeet=$('#localMeet').checked;
+    localStorage.setItem(STORE_KEY,JSON.stringify(o));
+  }catch(e){}
+}
+function restoreForm(){
+  var raw=null;
+  try{raw=localStorage.getItem(STORE_KEY);}catch(e){}
+  if(!raw)return false;
+  try{
+    var o=JSON.parse(raw);
+    FIELD_IDS.forEach(function(id){if(o.f&&o.f[id]!=null)$('#'+id).value=o.f[id];});
+    if(o.when){var r=$('input[name=when][value='+o.when+']');if(r)r.checked=true;}
+    $$('input[name=area]').forEach(function(i){i.checked=(o.area||[]).indexOf(i.value)>=0;});
+    $$('input[name=interest]').forEach(function(i){i.checked=(o.interest||[]).indexOf(i.value)>=0;});
+    $('#localMeet').checked=!!o.localMeet;
+    renderWants(o.want||[]);
+    return true;
+  }catch(e){return false;}
+}
+
+/* =====================================================
+   フォームの読み取り
+   ===================================================== */
+function readForm(){
+  var g=function(id){return $('#'+id).value;};
+  var prefs=[g('m1'),g('m2'),g('m3')].filter(Boolean);
+  var localPrefs=prefs.filter(function(m){return MODES[m]&&MODES[m].local;});
+  var longMode=longModeOf(prefs);
+  var cfg={
+    originId:g('origin'), localMeet:$('#localMeet').checked,
+    when:($('input[name=when]:checked')||{}).value||'month', dateStr:g('date'), month:int(g('month'))||10, season:g('season'),
+    areas:$$('input[name=area]:checked').map(function(i){return i.value;}),
+    nights:int(g('nights')),
+    A:Math.max(0,int(g('adults'))), C:Math.max(0,int(g('children'))), I:Math.max(0,int(g('infants'))),
+    budget:int(g('budget')), lodgeType:g('lodgeType'), perRoom:Math.max(1,int(g('perRoom'))||2), lodgeStyle:g('lodgeStyle'),
+    prefs:prefs, localPrefs:localPrefs, longMode:longMode, noLocalPref:localPrefs.length===0, fallbackLocal:'rental',
+    wanted:{}, interests:$$('input[name=interest]:checked').map(function(i){return i.value;}),
+    price:{biz:int(g('sLodgeBiz')),city:int(g('sLodgeCity')),onsen:int(g('sLodgeOnsen'))},
+    meal:int(g('sMeal')), misc:int(g('sMisc')), rentalDay:int(g('sRental')), fuel:num(g('sFuel')), taxiKm:num(g('sTaxi')), charterDay:int(g('sCharter')), ptKm:num(g('sPT')),
+    maxPerDay:3
+  };
+  $$('input[name=want]:checked').forEach(function(i){cfg.wanted[i.value]=true;});
+  if(cfg.A+cfg.C<1)cfg.A=1;
+  cfg.arriveMin=540;cfg.lastEndMin=1050;
+  return cfg;
+}
+
+/* =====================================================
+   移動・計画づくり
+   ===================================================== */
+function feasible(m,km,from,to){
+  if(m==='walk')return km<=1.5;
+  if(m==='rail'){var a=from.area&&areaOf(from.area),b=to.area&&areaOf(to.area);return !!(a&&b&&a.id!==b.id&&a.rail&&b.rail);}
+  return true;
+}
+function legInfo(from,to,cfg){
+  var km=road(from,to);
+  if(km<0.3)return {km:0,min:0,mode:'walk',from:from,to:to};
+  var mode=null;
+  for(var i=0;i<cfg.localPrefs.length;i++){if(feasible(cfg.localPrefs[i],km,from,to)){mode=cfg.localPrefs[i];break;}}
+  if(!mode)mode=cfg.fallbackLocal;
+  return {km:km,min:Math.round(km*MIN_PER_KM[mode]+OVERHEAD[mode]),mode:mode,from:from,to:to};
+}
+function permute(arr,cb){
+  (function rec(rest,cur){
+    if(!rest.length){cb(cur);return;}
+    for(var i=0;i<rest.length;i++){rec(rest.slice(0,i).concat(rest.slice(i+1)),cur.concat([rest[i]]));}
+  })(arr,[]);
+}
+function orderAreas(ids,origin){
+  if(ids.length<=1)return ids.slice();
+  var C={};ids.forEach(function(id){C[id]=cent(id);});
+  var best=null,bd=1e12;
+  if(origin){
+    // 出発地に近い所から回り、出発地に近い所で終わる並び（往復の距離が最短）
+    permute(ids,function(p){
+      var d=hav(origin,C[p[0]]),prev=p[0];
+      for(var i=1;i<p.length;i++){d+=hav(C[prev],C[p[i]]);prev=p[i];}
+      d+=hav(C[prev],origin);
+      if(d<bd){bd=d;best=p.slice();}
+    });
+    return best;
+  }
+  var west=ids.slice().sort(function(a,b){return C[a].lon-C[b].lon;})[0];
+  var rest=ids.filter(function(x){return x!==west;});
+  permute(rest,function(p){
+    var d=0,prev=west;
+    p.forEach(function(id){d+=hav(C[prev],C[id]);prev=id;});
+    if(d<bd){bd=d;best=p.slice();}
+  });
+  return [west].concat(best);
+}
+function pickSpots(cfg,month,areaOrder){
+  var cands=SPOTS.filter(function(s){return cfg.areas.indexOf(s.area)>=0;});
+  var must=cands.filter(function(s){return cfg.wanted[s.id];});
+  var others=cands.filter(function(s){return !cfg.wanted[s.id] && isOpen(s,null,month);});
+  others.forEach(function(s){
+    var sc=0;
+    s.tags.forEach(function(t){if(cfg.interests.indexOf(t)>=0)sc+=2;});
+    if(s.best&&s.best.indexOf(month)>=0)sc+=1;
+    if(cfg.C>0&&s.tags.indexOf('kids')>=0)sc+=1;
+    s._sc=sc;
+  });
+  others.sort(function(a,b){return b._sc-a._sc;});
+  var cap=Math.max(cfg.maxPerDay*(cfg.nights+1),must.length);
+  var chosen=must.slice();
+  for(var i=0;i<others.length&&chosen.length<cap;i++)chosen.push(others[i]);
+  // 地域順→エリア内は近い順
+  var ordered=[],pos=null;
+  areaOrder.forEach(function(aid){
+    var list=chosen.filter(function(s){return s.area===aid;});
+    var p=pos||cent(aid);
+    while(list.length){
+      list.sort(function(a,b){return hav(p,a)-hav(p,b);});
+      var s=list.shift();ordered.push(s);p=s;
+    }
+    pos=p;
+  });
+  return ordered;
+}
+function buildPlan(cfg,ordered,startDate,month){
+  var D=cfg.nights+1,days=[],remaining=ordered.slice();
+  var baseArea=null;
+  if(cfg.lodgeStyle==='base'){
+    var cnt={};ordered.forEach(function(s){cnt[s.area]=(cnt[s.area]||0)+1;});
+    baseArea=cfg.areas[0];
+    Object.keys(cnt).forEach(function(k){if(cnt[k]>(cnt[baseArea]||0))baseArea=k;});
+  }
+  var baseC=baseArea?cent(baseArea):null;
+  var lodgeArea=baseArea||(ordered.length?ordered[0].area:cfg.areas[0]);
+  for(var d=0;d<D;d++){
+    var date=startDate?addDays(startDate,d):null;
+    var m=date?date.getMonth()+1:month;
+    var start=d===0?cfg.arriveMin:540;
+    var end=d===D-1?cfg.lastEndMin:1050;
+    var cur=cent(lodgeArea),cursor=start,items=[],legs=[];
+    var day={index:d,date:date,items:items,legs:legs,lodgeArea:null,start:start,end:end};
+    var safety=0;
+    while(items.length<cfg.maxPerDay&&remaining.length&&safety++<12){
+      var picked=-1,info=null;
+      for(var i=0;i<remaining.length;i++){
+        var s=remaining[i];
+        if(!isOpen(s,date,m))continue;
+        var leg=legInfo(cur,s,cfg);
+        var t=cursor+leg.min;
+        if(s.window){if(t<s.window[0])t=s.window[0];if(t>s.window[1])continue;}
+        var le=lastEntry(s,m);if(le!=null&&t>le)continue;
+        var back=baseC?legInfo(s,baseC,cfg):null;
+        var fin=t+s.stay+(back?back.min:0);
+        var force=items.length===0&&(end-start)>=420;
+        if(fin>end&&!force)continue;
+        picked=i;info={leg:leg,t:t,over:fin>end};break;
+      }
+      if(picked<0)break;
+      var sp=remaining.splice(picked,1)[0];
+      info.leg.day=d;
+      var it={spot:sp,arrive:info.t,leave:info.t+sp.stay,leg:info.leg,over:info.over};
+      items.push(it);
+      if(info.leg.km>0)legs.push(info.leg);
+      cursor=it.leave;cur=sp;
+    }
+    if(items.length&&baseC){
+      var rl=legInfo(cur,baseC,cfg);rl.day=d;
+      if(rl.km>0){legs.push(rl);day.returnLeg=rl;}
+    }
+    if(d<D-1){
+      day.lodgeArea=baseArea||(items.length?items[items.length-1].spot.area:lodgeArea);
+      lodgeArea=day.lodgeArea;
+    }
+    days.push(day);
+  }
+  return {days:days,dropped:remaining,baseArea:baseArea};
+}
+
+/* ---- 出発地から現地までの概算（直線距離から計算。実際の運賃・ダイヤとは違います） ---- */
+function railFare(rail){
+  return 1500+27*Math.min(rail,300)+20*Math.max(0,Math.min(rail-300,300))+14*Math.max(0,rail-600);
+}
+function legEst(mode,d,areaId,cfg){
+  var road=d*1.4,rail=d*1.25;
+  if(mode==='rail'){var ex=RAIL_EXTRA[areaId]||{min:0,fare:0};return {min:Math.round(rail/160*60+40+ex.min),fare:Math.round((railFare(rail)+ex.fare)/10)*10};}
+  if(mode==='hbus')return {min:Math.round(road/60*60+30),fare:Math.round((1000+8*road)/10)*10};
+  if(mode==='plane'){var far=!AIRPORT_AREAS[areaId];return {min:Math.round(120+d/650*60+(far?120:0)),fare:Math.round((8000+18*d+(far?4000:0))/10)*10};}
+  if(mode==='own')return {min:Math.round(road/65*60+(road>150?30:0)),fare:Math.round(cfg.fuel*1.5*road/10)*10};
+  var buses=Math.max(1,Math.ceil((cfg.A+cfg.C+cfg.I)/40));
+  return {min:Math.round(road/55*60+30),fare:buses*cfg.charterDay};
+}
+function estimateLong(cfg,areaOrder){
+  var r={mode:cfg.longMode,options:[],total:0,outMin:0,inMin:0,shared:(cfg.longMode==='own'||cfg.longMode==='charter'),msg:'',dist:0,first:areaOrder[0],last:areaOrder[areaOrder.length-1]};
+  if(cfg.localMeet){r.msg='現地集合のため、現地までの時間と交通費は入れていません。';return r;}
+  var o=CITIES[cfg.originId];
+  if(!o){r.msg='出発地が選ばれていないため、現地までの時間と交通費は入れていません（1日目は朝9:00から観光する想定です）。上で出発地を選ぶと計算します。';return r;}
+  var dOut=hav(o,cent(r.first)),dIn=hav(o,cent(r.last));
+  r.dist=Math.round(dOut);
+  ['rail','plane','hbus','own','charter'].forEach(function(m){
+    var a=legEst(m,dOut,r.first,cfg),b=legEst(m,dIn,r.last,cfg);
+    var op={mode:m,out:a,inn:b,total:a.fare+b.fare,shared:(m==='own'||m==='charter'),
+      far:(m==='plane'&&(!AIRPORT_AREAS[r.first]||!AIRPORT_AREAS[r.last])),short:(m==='plane'&&dOut<200)};
+    r.options.push(op);
+    if(m===cfg.longMode){r.total=op.total;r.outMin=a.min;r.inMin=b.min;}
+  });
+  return r;
+}
+
+/* =====================================================
+   費用の計算
+   ===================================================== */
+function vehicles(cfg){return Math.max(1,Math.ceil((cfg.A+cfg.C+cfg.I)/4));}
+function localCostFor(mode,km,daysUsed,cfg){
+  var cars=vehicles(cfg),buses=Math.max(1,Math.ceil((cfg.A+cfg.C+cfg.I)/40));
+  if(mode==='rental')return {shared:cars*(cfg.rentalDay*daysUsed+cfg.fuel*km),pa:0,pc:0};
+  if(mode==='own')return {shared:cars*cfg.fuel*km,pa:0,pc:0};
+  if(mode==='taxi')return {shared:cars*cfg.taxiKm*km,pa:0,pc:0};
+  if(mode==='charter')return {shared:buses*cfg.charterDay*daysUsed,pa:0,pc:0};
+  if(mode==='bus'||mode==='rail')return {shared:0,pa:cfg.ptKm*km,pc:cfg.ptKm*km*0.5};
+  return {shared:0,pa:0,pc:0};
+}
+function calcCost(plan,cfg,lodgeKey){
+  var A=cfg.A,C=cfg.C,D=cfg.nights+1,N=cfg.nights;
+  var res={rows:[],unknown:[],modeRows:[]};
+  // 現地までの交通
+  var L=cfg.long,lm=cfg.longMode,shared=0,pa=0,pc=0,longTotal;
+  if(L.shared){shared+=L.total;longTotal=L.total;}else{pa+=L.total;pc+=L.total*0.5;longTotal=L.total*(A+C*0.5);}
+  res.rows.push({k:'出発地から現地までの往復（'+MODES[lm].n+'）',v:longTotal,note:L.msg?'計算に入れていません':(L.shared?'全体の金額（距離からの概算）':'大人1人'+yen(L.total)+'、小学生は半額（距離からの概算）')});
+  // 現地での移動
+  var byMode={};
+  plan.days.forEach(function(d){d.legs.forEach(function(l){
+    var o=byMode[l.mode]||(byMode[l.mode]={km:0,days:{}});o.km+=l.km;o.days[d.index]=1;
+  });});
+  var localTotal=0;
+  Object.keys(byMode).forEach(function(m){
+    var o=byMode[m],du=Object.keys(o.days).length,c=localCostFor(m,o.km,du,cfg);
+    var tot=c.shared+c.pa*A+c.pc*C;
+    shared+=c.shared;pa+=c.pa;pc+=c.pc;localTotal+=tot;
+    res.modeRows.push({mode:m,km:o.km,total:tot});
+  });
+  res.rows.push({k:'現地での移動',v:localTotal,note:res.modeRows.map(function(r){return MODES[r.mode].n+' 約'+Math.round(r.km)+'km';}).join('、')||'移動なし'});
+  // 入場料など
+  var feeA=0,feeC=0;
+  plan.days.forEach(function(d){d.items.forEach(function(it){
+    var f=it.spot.fee;
+    if(f){feeA+=f.a;feeC+=f.c;}else res.unknown.push(it.spot.name);
+  });});
+  pa+=feeA;pc+=feeC;
+  res.rows.push({k:'入場料・体験料',v:feeA*A+feeC*C,note:res.unknown.length?'料金未確認の施設は含みません（'+res.unknown.length+'件）':'すべて確認済みの金額'});
+  // 宿
+  var rooms=Math.max(1,Math.ceil((A+C)/cfg.perRoom));
+  var lp=cfg.price[lodgeKey]||0;
+  var lodA=lp*N,lodC=lp*N*0.7;
+  pa+=lodA;pc+=lodC;
+  res.rows.push({k:'宿泊費（'+N+'泊）',v:lodA*A+lodC*C,note:N?'1人1泊'+yen(lp)+'の目安、小学生は7割、未就学児は無料で計算（'+rooms+'部屋）':'日帰りのため0円'});
+  // 食事
+  var mealA=cfg.meal*D,mealC=cfg.meal*D*0.7;
+  pa+=mealA;pc+=mealC;
+  res.rows.push({k:'食事（昼・夕）',v:mealA*A+mealC*C,note:'1人1日'+yen(cfg.meal)+'の目安、小学生は7割で計算'});
+  var miscA=cfg.misc,miscC=cfg.misc*0.5;
+  pa+=miscA;pc+=miscC;
+  res.rows.push({k:'お土産・おやつ・雑費',v:miscA*A+miscC*C,note:'1人'+yen(cfg.misc)+'の目安、小学生は半額で計算'});
+  res.lodging=lodA*A+lodC*C;
+  res.total=res.rows.reduce(function(s,r){return s+r.v;},0);
+  var people=Math.max(1,A+C);
+  res.perAdult=pa+shared/people;
+  res.perChild=pc+shared/people;
+  res.shared=shared;
+  res.byMode=byMode;
+  return res;
+}
+
+/* =====================================================
+   時期・日にちの提案
+   ===================================================== */
+function candidateDates(m){
+  var now=new Date(),today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  var y=(m>=now.getMonth()+1)?now.getFullYear():now.getFullYear()+1;
+  var first=new Date(y,m-1,1),last=new Date(y,m,0),out=[];
+  for(var d=first;d<=last;d=addDays(d,1)){if(d>today)out.push(d);}
+  return out;
+}
+function conflictScore(plan,cfg){
+  var sc=0;plan.dropped.forEach(function(s){sc+=cfg.wanted[s.id]?10:1;});
+  return sc;
+}
+
+/* =====================================================
+   出力
+   ===================================================== */
+function ico(id,cls){return '<svg class="ico'+(cls?' '+cls:'')+'" aria-hidden="true"><use href="#'+id+'"/></svg>';}
+function links(s){
+  var h='';
+  if(s.tel)h+='<a href="tel:'+esc(s.tel.replace(/[^0-9]/g,''))+'">☎ '+esc(s.tel)+'</a>';
+  if(s.url)h+='<a href="'+esc(s.url)+'" target="_blank" rel="noopener noreferrer">公式サイト</a>';
+  else h+='<a href="'+esc(searchUrl(s.name+' 公式サイト'))+'" target="_blank" rel="noopener noreferrer">公式サイトをさがす</a>';
+  if(!s.tel)h+='<a href="'+esc(searchUrl(s.name+' 電話番号'))+'" target="_blank" rel="noopener noreferrer">電話番号をさがす</a>';
+  h+='<a href="'+esc(mapUrl(s.name))+'" target="_blank" rel="noopener noreferrer">地図</a>';
+  return h;
+}
+function feeText(s,cfg){
+  if(!s.fee)return '料金は<strong>未確認</strong>です（合計に含めていません）';
+  var f=s.fee;
+  if(f.a===0&&f.c===0)return '<strong>無料</strong>'+(f.note?'（'+esc(f.note)+'）':'');
+  var tot=f.a*cfg.A+f.c*cfg.C;
+  return '大人'+yen(f.a)+'／小学生'+(f.c?yen(f.c):'無料')+' → このグループで<strong>'+yen(tot)+'</strong>'+(f.note?'（'+esc(f.note)+'）':'');
+}
+function lodgeHTML(areaId,cfg){
+  var a=areaOf(areaId),list=LODGES[areaId],h='<div class="lodge">'+ico('i-bed')+' <b>今夜の宿：'+esc(a.name)+'エリア</b>';
+  if(list){
+    h+='<ul>';list.forEach(function(n){
+      h+='<li>'+esc(n)+'　<a href="'+esc(searchUrl(n+' 公式サイト'))+'" target="_blank" rel="noopener noreferrer">公式サイトをさがす</a></li>';
+    });
+    h+='</ul><div class="meta">宿の名前は、旅行会社のプランに載っていることを確認しました。料金・空室・電話番号は公式サイトで確認してください。予約はご自身でお願いします。</div>';
+  }else{
+    h+='<div class="meta">このエリアの宿はまだ登録していません。下のリンクで探してください。</div>';
+  }
+  h+='<div class="links"><a href="'+esc(searchUrl(a.name+' 宿泊 ホテル 旅館'))+'" target="_blank" rel="noopener noreferrer">'+esc(a.name)+'の宿をさがす</a></div></div>';
+  return h;
+}
+
+function longHTML(cfg){
+  var L=cfg.long,h='<section class="card"><div class="res-h">'+ico('i-train','lg')+'<h2>出発地から現地までの移動</h2></div>';
+  if(L.msg){return h+'<div class="alert">'+esc(L.msg)+'</div></section>';}
+  var o=CITIES[cfg.originId];
+  h+='<div class="meta">'+esc(o.n)+'から'+esc(areaOf(L.first).name)+'まで、直線で約'+L.dist+'km。時間と費用は距離から出した<strong>概算</strong>です。</div>';
+  h+='<table class="cmp"><tr><th>手段</th><th>片道の時間</th><th>往復の費用</th></tr>';
+  L.options.forEach(function(op){
+    if(op.mode==='charter'&&cfg.longMode!=='charter')return;
+    var chosen=op.mode===cfg.longMode;
+    h+='<tr'+(chosen?' class="hit"':'')+'><td>'+ico(MODES[op.mode].ico)+' '+MODES[op.mode].n+(chosen?'<br><small>この計画で使用</small>':'')+(op.short?'<br><small>近距離のため不向き</small>':'')+(op.far?'<br><small>空港からの乗り継ぎを含む</small>':'')+'</td>'+
+       '<td>約'+fmtDur(op.out.min)+'</td><td>'+yen(op.total)+(op.shared?'<br><small>全体の金額</small>':'<br><small>大人1人</small>')+'</td></tr>';
+  });
+  h+='</table><div class="meta">小学生は半額、未就学児は無料で計算しています。新幹線・電車の式は、大阪〜金沢の実際の運賃（片道9,410円・2024年3月）に合わせて作りました（駅から遠い場所は乗り継ぎ分を上乗せしています）。ほかの区間や、飛行機・バスの金額は確認していない概算で、実際とは数千円〜1万円以上ずれることがあります。路線やダイヤの有無も含めて、出発前に乗換案内で確認してください。</div></section>';
+  return h;
+}
+
+function render(ctx){
+  var cfg=ctx.cfg,plan=ctx.plan,cost=ctx.cost,h='';
+  var A=cfg.A,C=cfg.C,I=cfg.I;
+  h+='<h2 class="print-title">旅行計画（岐阜・福井・富山・石川）</h2>';
+
+  // 概要
+  h+='<section class="card"><div class="res-h">'+ico('i-suitcase','lg')+'<h2>プランができました</h2></div>';
+  h+='<div class="meta">'+esc(cfg.localMeet?'現地集合':(CITIES[cfg.originId]?CITIES[cfg.originId].n+'から':'出発地未選択'))+'　'+(cfg.nights?cfg.nights+'泊'+(cfg.nights+1)+'日':'日帰り')+'　大人'+A+'人'+(C?'・小学生'+C+'人':'')+(I?'・未就学児'+I+'人':'')+'</div>';
+  h+='<div class="meta">行き先：'+cfg.areas.map(function(id){return esc(areaOf(id).name);}).join('、')+'</div>';
+  if(ctx.notes.length){ctx.notes.forEach(function(n){h+='<div class="alert">'+n+'</div>';});}
+  h+='</section>';
+  h+=longHTML(cfg);
+
+  // 時期
+  h+='<section class="card"><div class="res-h">'+ico('i-cal','lg')+'<h2>おすすめの時期</h2></div><div class="season">';
+  ctx.topMonths.forEach(function(r,i){
+    h+='<div class="month'+(i===0?' top':'')+'"><b>'+ico(SEASON_ICON(r.m))+r.m+'月'+(i===0?'（いちおし）':'')+'</b>';
+    h+='<small>'+(r.good.length?'見ごろ：'+esc(r.good.slice(0,3).join('、')):'季節の目玉は特にありません')+'</small>';
+    if(r.bad.length)h+='<small style="color:#9B2E1E">休業の時期：'+esc(r.bad.join('、'))+'</small>';
+    h+='</div>';
+  });
+  h+='</div>';
+  if(ctx.chosenMonthInfo)h+='<div class="alert'+(ctx.chosenMonthInfo.bad.length?'':' ok')+'">'+ctx.chosenMonthInfo.text+'</div>';
+  if(ctx.dateSugs&&ctx.dateSugs.length){
+    h+='<div class="lbl" style="margin-top:8px">おすすめの出発日（休みが確認できた施設だけを避けています）</div>';
+    ctx.dateSugs.forEach(function(s){
+      h+='<div class="sug"><b>'+esc(fmtDate(s.date))+'から</b><div class="meta">'+(s.dropped.length?'入りきらない場所：'+esc(s.dropped.map(function(x){return x.name+((x.openM&&x.openM.indexOf(s.month)<0)?'（休業の時期）':'');}).join('、')):'選んだ場所をすべて回れます')+'</div></div>';
+    });
+  }
+  h+='</section>';
+
+  // 行程
+  h+='<section class="card"><div class="res-h">'+ico('i-pin','lg')+'<h2>行程</h2></div>';
+  if(plan.baseArea)h+='<div class="alert">連泊の拠点は「'+esc(areaOf(plan.baseArea).name)+'」にしました。毎日、宿から出発して宿に戻る計算です。</div>';
+  plan.days.forEach(function(d,idx){
+    h+='<div class="day"><div class="day-h"><h3>'+(idx+1)+'日目</h3>'+(d.date?'<span>'+esc(fmtDate(d.date))+'</span>':'')+'</div>';
+    if(idx===0&&cfg.long.outMin>0)h+='<div class="meta">'+esc(CITIES[cfg.originId].n)+'を朝8:00に出発すると、'+fmtT(d.start-30)+'ごろ到着、'+fmtT(d.start)+'から観光する想定です（'+MODES[cfg.longMode].n+'）。</div>';
+    if(idx===plan.days.length-1&&cfg.long.inMin>0)h+='<div class="meta">帰りの移動があるため、'+fmtT(d.end)+'までに観光を終える想定です。</div>';
+    if(!d.items.length)h+='<div class="alert">'+(plan.dropped.length?'この日は入れられる予定がありません（移動に時間がかかる日、または休みの施設が多い日です）。':'この日は、選んだエリアの観光地を回り終えたため、予定がありません。エリアを足すか、日数を減らすとちょうどよくなります。')+'</div>';
+    h+='<ol class="stops">';
+    d.items.forEach(function(it,ii){
+      var s=it.spot;
+      if(it.leg.km>0){
+        h+='<li class="stop leg"><div></div><div class="rail"></div><div class="body">'+ico(MODES[it.leg.mode].ico)+(ii===0?'宿・駅から ':'')+MODES[it.leg.mode].n+'で約'+fmtDur(it.leg.min)+'（約'+Math.round(it.leg.km)+'km）</div></li>';
+      }
+      h+='<li class="stop"><div class="time">'+fmtT(it.arrive)+'<small>〜'+fmtT(it.leave)+'</small></div><div class="rail"></div><div class="body">';
+      h+='<div class="name">'+esc(s.name)+(s.v?'<span class="tag v">確認済（'+esc(fmtV(s.v))+'）</span>':'<span class="tag u">未確認（料金・営業時間）</span>')+'</div>';
+      h+='<div class="meta">滞在の目安 '+fmtDur(s.stay)+'　'+feeText(s,cfg)+'</div>';
+      h+='<div class="meta">営業：'+esc(s.hours)+'／休み：'+esc(s.closed)+'</div>';
+      if(s.note)h+='<div class="note">'+esc(s.note)+'</div>';
+      if(it.over)h+='<div class="note">時間がぎりぎりです。ほかの場所を減らすと余裕が出ます。</div>';
+      h+='<div class="links">'+links(s)+'</div></div></li>';
+    });
+    h+='</ol>';
+    if(d.returnLeg)h+='<div class="meta">宿へ戻る：'+MODES[d.returnLeg.mode].n+'で約'+fmtDur(d.returnLeg.min)+'（約'+Math.round(d.returnLeg.km)+'km）</div>';
+    if(d.lodgeArea)h+=lodgeHTML(d.lodgeArea,cfg);
+    h+='</div>';
+  });
+  if(plan.dropped.length){
+    var wd=plan.dropped.filter(function(s){return cfg.wanted[s.id];});
+    if(wd.length)h+='<div class="alert bad">行きたい場所のうち、時間や休みの都合で入れられなかった場所：'+esc(wd.map(function(s){return s.name;}).join('、'))+'。日数を増やすと入るかもしれません。</div>';
+  }
+  h+='</section>';
+
+  // 費用
+  h+='<section class="card"><div class="res-h">'+ico('i-yen','lg')+'<h2>旅行費用のすべて（目安）</h2></div><div class="meta">交通（現地まで・現地で）、入場料、宿泊、食事、お土産・雑費をすべて足した金額です。</div><div class="rows">';
+  cost.rows.forEach(function(r){h+='<div><span>'+esc(r.k)+'<small>'+esc(r.note||'')+'</small></span><span>'+yen(r.v)+'</span></div>';});
+  h+='<div class="total"><span>合計</span><span>'+yen(cost.total)+'</span></div></div>';
+  h+='<div class="pp"><div>大人1人あたり<b>'+yen(cost.perAdult)+'</b></div>'+(C?'<div>小学生1人あたり<b>'+yen(cost.perChild)+'</b></div>':'<div>全体で<b>'+(A+C)+'人</b></div>')+'</div>';
+  if(cost.shared>0)h+='<div class="meta">車やタクシーなど、みんなで使う費用（'+yen(cost.shared)+'）は、大人と小学生の人数で等分しています。</div>';
+  if(cfg.budget){
+    var diff=cfg.budget-cost.total;
+    h+='<div class="alert '+(diff>=0?'ok':'bad')+'">予算 '+yen(cfg.budget)+' に対して、'+(diff>=0?'約'+yen(diff)+'の余裕があります。':'約'+yen(-diff)+'オーバーです。')+'</div>';
+  }
+  if(cost.unknown.length)h+='<div class="alert">料金が未確認の施設：'+esc(cost.unknown.join('、'))+'。実際の入場料などが上乗せになります。</div>';
+  // 宿のタイプ別
+  h+='<div class="lbl" style="margin-top:10px">宿のタイプ別の合計（ほかは同じ条件）</div><table class="cmp"><tr><th>宿のタイプ</th><th>合計</th><th>大人1人</th></tr>';
+  [['biz','ビジネスホテル'],['city','シティ・観光ホテル'],['onsen','温泉旅館']].forEach(function(t){
+    var c=calcCost(plan,cfg,t[0]);
+    h+='<tr'+((cfg.budget&&c.total<=cfg.budget)?' class="hit"':'')+'><td>'+t[1]+'</td><td>'+yen(c.total)+'</td><td>'+yen(c.perAdult)+'</td></tr>';
+  });
+  h+='</table>'+(cfg.budget?'<div class="meta">緑色は予算内に収まるタイプです。</div>':'');
+  // 移動手段別
+  var km=0,du=0,legN=0;
+  plan.days.forEach(function(d){var k=0;d.legs.forEach(function(l){k+=l.km;legN++;});if(k>0){du++;km+=k;}});
+  if(km>0){
+    h+='<div class="lbl" style="margin-top:10px">現地での移動手段別の目安（同じ行程を、その手段だけで動いた場合）</div><table class="cmp"><tr><th>手段</th><th>費用</th><th>移動時間</th></tr>';
+    ['rental','taxi','charter','bus'].forEach(function(m){
+      var c=localCostFor(m,km,du,cfg),tot=c.shared+c.pa*A+c.pc*C,tm=km*MIN_PER_KM[m]+OVERHEAD[m]*legN;
+      h+='<tr><td>'+ico(MODES[m].ico)+' '+MODES[m].n+'</td><td>'+yen(tot)+'</td><td>約'+fmtDur(tm)+'</td></tr>';
+    });
+    h+='</table><div class="meta">路線バスは本数が少ない地域があります。貸切バスは人数が多いほど1人あたりが安くなります（現在'+(A+C+I)+'人）。</div>';
+  }
+  h+='</section>';
+
+  h+='<div class="print-row no-print"><button class="btn" type="button" id="printBtn">'+ico('i-camera')+' この計画を印刷する</button></div>';
+  return h;
+}
+
+/* =====================================================
+   実行
+   ===================================================== */
+function generate(){
+  var cfg=readForm();
+  var out=$('#result');
+  if(!cfg.areas.length){
+    out.innerHTML='<section class="card"><div class="alert bad">行き先を1つ以上選んでください。</div></section>';
+    out.scrollIntoView({behavior:'smooth',block:'start'});return;
+  }
+  var notes=[];
+  var cands=SPOTS.filter(function(s){return cfg.areas.indexOf(s.area)>=0;});
+  var scores=[];for(var m=1;m<=12;m++)scores.push(monthScore(m,cands,cfg.wanted));
+  var byScore=scores.slice().sort(function(a,b){return b.sc-a.sc||a.m-b.m;});
+  var topMonths=byScore.slice(0,3);
+
+  // 対象の月
+  var months,refMonth,startDate=null,chosenMonthInfo=null;
+  if(cfg.when==='date'&&cfg.dateStr){
+    var p=cfg.dateStr.split('-');startDate=new Date(+p[0],+p[1]-1,+p[2]);
+    refMonth=startDate.getMonth()+1;months=[refMonth];
+  }else if(cfg.when==='month'){months=[cfg.month];refMonth=cfg.month;}
+  else if(cfg.when==='season'){months=SEASONS[cfg.season];refMonth=months.slice().sort(function(a,b){return scores[b-1].sc-scores[a-1].sc;})[0];}
+  else{months=topMonths.map(function(r){return r.m;});refMonth=topMonths[0].m;}
+  if(cfg.when==='date'&&!cfg.dateStr){notes.push('出発日が未入力のため、月で探した結果を表示しています。');}
+
+  if(cfg.when==='date'||cfg.when==='month'){
+    var mi=scores[refMonth-1],txt=refMonth+'月は、';
+    if(mi.bad.length)txt+='「'+esc(mi.bad.join('、'))+'」が休業の時期です。別の月もご検討ください。';
+    else if(mi.good.length)txt+='「'+esc(mi.good.slice(0,3).join('、'))+'」が見ごろの時期です。';
+    else txt+='大きな休業はありません。';
+    chosenMonthInfo={bad:mi.bad,text:txt};
+  }
+
+  var areaOrder=orderAreas(cfg.areas,(!cfg.localMeet&&CITIES[cfg.originId])?CITIES[cfg.originId]:null);
+  cfg.long=estimateLong(cfg,areaOrder);
+  cfg.arriveMin=cfg.long.outMin>0?Math.round(480+cfg.long.outMin+30):540;
+  cfg.lastEndMin=cfg.long.inMin>0?Math.min(1050,Math.round(1200-cfg.long.inMin-60)):1050;
+  var ordered=pickSpots(cfg,refMonth,areaOrder);
+
+  // 日にちの提案
+  var dateSugs=[];
+  if(!(cfg.when==='date'&&startDate)){
+    var all=[];
+    months.forEach(function(mm){candidateDates(mm).forEach(function(d){
+      var pl=buildPlan(cfg,ordered,d,mm);
+      all.push({date:d,month:mm,score:conflictScore(pl,cfg),ms:scores[mm-1].sc,dropped:pl.dropped});
+    });});
+    all.sort(function(a,b){return a.score-b.score||b.ms-a.ms||a.date-b.date;});
+    all.forEach(function(x){
+      if(dateSugs.length>=3)return;
+      var far=dateSugs.every(function(y){return Math.abs(x.date-y.date)>=7*86400000;});
+      if(far)dateSugs.push(x);
+    });
+    if(dateSugs.length)startDate=dateSugs[0].date;
+  }
+  var plan=buildPlan(cfg,ordered,startDate,refMonth);
+
+  // 注意
+  var emptyDays=plan.days.filter(function(d){return !d.items.length;}).length;
+  if(!plan.dropped.length&&emptyDays>0)notes.push('選んだエリアで登録している観光地は、すべて行程に入っています。日数が余るので、行き先のエリアを増やすか、日数を減らしてください。');
+  if(cfg.long.outMin>=300&&cfg.nights<=1)notes.push('現地までの移動が長いため、'+(cfg.nights?'1泊2日':'日帰り')+'では観光の時間が短くなります。2泊3日以上がおすすめです。');
+  if(cfg.noLocalPref)notes.push('現地での移動手段が選ばれていないため、レンタカーで計算しています。');
+  if(cfg.lodgeStyle==='base'&&cfg.areas.length>=3)notes.push('連泊は、行き先が近いエリアにまとまっているときに向いています。離れたエリアを回る場合は「泊ごとに移動」もお試しください。');
+  var limited=cfg.areas.filter(function(a){return areaOf(a).pt==='limited';}).map(function(a){return areaOf(a).name;});
+  if(limited.length&&cfg.localPrefs.indexOf('bus')>=0)notes.push('路線バスの本数が少ない地域があります（'+esc(limited.join('、'))+'）。時刻表の確認をおすすめします。');
+  if(cfg.A+cfg.C+cfg.I>=20)notes.push('人数が多いため、貸切バスの利用もご検討ください。');
+  if(startDate&&cfg.when!=='date')notes.push('下の日程は、おすすめの出発日（'+esc(fmtDate(startDate))+'）で作っています。');
+
+  var cost=calcCost(plan,cfg,cfg.lodgeType);
+  out.innerHTML=render({cfg:cfg,plan:plan,cost:cost,notes:notes,topMonths:topMonths,dateSugs:dateSugs,chosenMonthInfo:chosenMonthInfo});
+  var pb=$('#printBtn');if(pb)pb.addEventListener('click',function(){try{window.print();}catch(e){alert('ブラウザのメニューから印刷してください。');}});
+  out.scrollIntoView({behavior:'smooth',block:'start'});
+  saveForm();
+}
+
+/* =====================================================
+   起動
+   ===================================================== */
+buildForm();
+buildOrigins();
+var restored=restoreForm();
+if(!restored){renderWants([]);}
+updateWhen();updateOriginUI();
+
+document.addEventListener('change',function(e){
+  var t=e.target;
+  if(t.name==='area'){renderWants();}
+  if(t.name==='when'){updateWhen();}
+  if(t.id==='localMeet'){updateOriginUI();}
+  if(t.closest&&t.closest('#form'))saveForm();
+});
+document.addEventListener('click',function(e){
+  var b=e.target.closest&&e.target.closest('[data-pref]');
+  if(b){
+    var pid=b.getAttribute('data-pref');
+    var boxes=$$('.pref[data-p="'+pid+'"] input[name=area]');
+    var all=boxes.every(function(x){return x.checked;});
+    boxes.forEach(function(x){x.checked=!all;});
+    renderWants();saveForm();
+  }
+});
+$('#form').addEventListener('submit',function(e){e.preventDefault();generate();});
+$('#resetBtn').addEventListener('click',function(){
+  try{localStorage.removeItem(STORE_KEY);}catch(e){}
+  location.reload();
+});
+})();
+</script>
+<script src="ads.js" defer></script>
+</body>
+</html>
